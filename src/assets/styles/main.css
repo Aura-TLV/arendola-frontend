@@ -1,0 +1,240 @@
+/* custom styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f8f9fa;
+ }
+
+/* ===== Brand tokens ===== */
+:root{
+  --text: #222222;
+  --muted: #666666;
+  --hint: #9AA0A6;
+
+  --green: #009E36;
+  --green-hover: #008A30;
+  --green-press: #00752B;
+
+  --danger: #D93025;
+  --disabled: #E0E0E0;
+
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* ===== Base ===== */
+.auth{
+  font-size: 14px; 
+  font-family: var(--font-sans);                /* базовый текст */
+  color: var(--text);
+}
+.auth .auth-title{
+  font-size: 28px;                 /* заголовок */
+  line-height: 1.25;
+  margin-bottom: .75rem;
+}
+.auth .text-muted{ color: var(--muted) !important; }
+
+/* Ссылки (все зелёные в пределах .auth) */
+.auth a{
+  color: var(--green);
+  text-decoration: none;
+}
+.auth a:hover{ text-decoration: underline; }
+
+/* Инпуты */
+.auth .form-label{ font-weight: 500; }
+/* Инпуты — размер текста 14px */
+.auth .form-control{
+  height: 44px;
+  border-radius: .75rem;
+  font-size: 14px;          /* <— фиксируем */
+  line-height: 22px;        /* высота строки */
+}
+
+/* Плейсхолдер — 14px и бледный цвет */
+.auth .form-control::placeholder{
+  font-size: 14px;          /* <— фиксируем */
+  color: var(--hint);
+  font-weight: 400;
+}
+
+.auth .form-hint{ color: var(--hint); }  
+
+/* хинт тоньше, чем лейбл */
+.auth .form-label .form-hint { 
+  font-weight: 400;   /* лейбл 500 → хинт 400 */
+}
+/* “(10+ символов)” бледнее */
+.auth .form-control:focus{
+  border-color: var(--green);
+  box-shadow: 0 0 0 .25rem rgba(0,158,54,.15);
+}
+
+/* Чекбокс */
+.auth .form-check-input:checked{
+  background-color: var(--green);
+  border-color: var(--green);
+}
+
+/* Ошибки (валидация) */
+.auth .invalid-feedback{ color: var(--danger); }
+
+/* Кнопка CTA: зелёная, 16px */
+.btn.btn-brand{
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: var(--green);
+  border-color: var(--green);
+  border-radius: .75rem;
+}
+.btn.btn-brand:hover{
+  color: #fff;
+  background-color: var(--green-hover);
+  border-color: var(--green-hover);
+}
+.btn.btn-brand:active{
+  color: #fff;
+  background-color: var(--green-press);
+  border-color: var(--green-press);
+}
+.btn.btn-brand:focus{
+  box-shadow: 0 0 0 .25rem rgba(0,158,54,.20);
+}
+.btn.btn-brand:disabled{
+  background-color: var(--disabled);
+  border-color: var(--disabled);
+  color: #fff;
+  opacity: 1;
+}
+
+/* ===== Иконка "глаз" внутри поля ===== */
+.eye-toggle{
+  all: unset;                        /* убираем рамки/фон/паддинги во всех браузерах */
+  position: absolute;
+  top: 50%;
+  right: .5rem;
+  transform: translateY(-50%);
+  cursor: default;                   /* сейчас без JS, просто иконка */
+  display: grid;
+  place-items: center;
+  width: 32px; height: 32px;         /* кликабельная зона, но без визуальной рамки */
+  color: #666666;
+}
+.eye-toggle i{
+  font-size: 18px;
+  line-height: 1;
+}
+
+
+
+/* Subtitle под заголовком */
+.auth .auth-subtitle{
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* Сообщения состояния */
+.auth .form-error{
+  font-size: 14px;
+  color: var(--danger);
+}
+.auth .form-success{
+  font-size: 14px;
+  color: var(--green);
+}
+
+
+
+
+/* Заголовок блока "Возможные ошибки" */
+.auth .form-help-heading{
+  font-size:14px;
+  color:var(--muted);
+}
+
+/* Список ошибок — красный, с меткой */
+.auth .error-list{
+  list-style:none;
+  padding-left:0;
+  margin:0;
+  color:var(--danger);
+  font-size:14px;
+}
+.auth .error-list li{
+  position:relative;
+  padding-left:1.1rem;
+}
+.auth .error-list li::before{
+  content:"•";
+  position:absolute;
+  left:0; top:0;
+  color:var(--danger);
+  line-height:1;
+}
+
+
+/* Подзаголовок под h1 */
+.auth .auth-subtitle{
+  font-size: 14px;
+  color: var(--muted);
+}
+
+
+
+
+.eye-toggle {
+  position: absolute;
+  right: .75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+
+/* ===== Language Switcher (brand) ===== */
+
+/* --- Switcher layout --- */
+.lang-switch{
+  display: flex;
+  gap: 8px;                 /* расстояние между кнопками */
+}
+
+/* квадратнее углы + единый размер */
+.lang-switch .btn{
+  height: 32px;
+  padding: 0 .75rem;
+  font-weight: 600;
+  border-radius: .35rem;    /* небольшой радиус */
+  line-height: 1;
+}
+
+/* неактивная: зелёная ОБВОДКА */
+.btn-outline-brand{
+  color: var(--green);
+  background-color: transparent !important;
+  border: 1px solid var(--green) !important;
+}
+.btn-outline-brand:hover{
+  color: #fff;
+  background-color: var(--green) !important;
+  border-color: var(--green) !important;
+}
+.btn-outline-brand:active{
+  color:#fff;
+  background-color: var(--green-press) !important;
+  border-color: var(--green-press) !important;
+}
+
+/* активная уже есть как .btn-brand — слегка квадратнее и без glow */
+.btn.btn-brand{ border-radius: .35rem; }
+.btn.btn-brand:focus,
+.btn.btn-brand:focus-visible,
+.btn-outline-brand:focus,
+.btn-outline-brand:focus-visible{
+  outline: none;
+  box-shadow: none;         /* убираем зелёный ореол */
+}

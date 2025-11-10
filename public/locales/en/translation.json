@@ -1,0 +1,61 @@
+{
+  "auth": {
+    "login": {
+      "title": "Sign in",
+      "email": "E-mail",
+      "password": "Password",
+      "remember": "Remember me (30 days)",
+      "forgot": "Forgot password?",
+      "submit": "Sign in",
+      "errorsTitle": "Possible issues",
+      "errInvalidEmail": "Enter a valid e-mail",
+      "errWrongCreds": "Wrong e-mail or password",
+      "errNotConfirmed": "Account not confirmed, check your inbox"
+    },
+    "register": {
+      "title": "Create account",
+      "name": "Name",
+      "passwordHint": "(10+ characters)",
+      "agree": "I agree with",
+      "terms": "Terms of Service",
+      "privacy": "Privacy Policy",
+      "submit": "Sign up",
+      "haveAccount": "Already have an account?",
+      "login": "Sign in"
+    },
+    "restore": {
+      "title": "Password reset",
+      "subtitle": "Enter your e-mail and we’ll send a reset link",
+      "email": "E-mail",
+      "submit": "Send link",
+      "spamNote": "If there’s no email, check the Spam folder",
+      "returnLogin": "Back to login"
+    }
+  },
+  "checkEmail": {
+    "title": "Check your email",
+    "subtitle": "We sent a confirmation link to ",
+    "resendIn": "Didn’t get it? Resend in ",
+    "resend": "Resend",
+    "sec": "sec",
+    "openClient": "Open mail client"
+  },
+  "confirmEmail": {
+    "title": "E-mail confirmed",
+    "subtitle": "You can sign in now",
+    "toAccount": "Go to dashboard",
+    "login": "Sign in"
+  },
+  "newPassword": {
+    "title": "New password",
+    "subtitle": "Create a password at least 10 characters long",
+    "new": "New password",
+    "repeat": "Repeat password",
+    "save": "Save password",
+    "saving": "Saving…",
+    "saved": "Password updated",
+    "mismatch": "Passwords do not match",
+    "tooShort": "Password must be at least 10 characters",
+    "fail": "Couldn’t update password. Try again."
+  }
+}
