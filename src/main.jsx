@@ -4,7 +4,12 @@ import './i18n'
 import { BrowserRouter } from 'react-router-dom'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './assets/styles/main.css'
+import './assets/styles/listing.css';
+import './assets/styles/date-range.css';
+
+
 import App from './App.jsx'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

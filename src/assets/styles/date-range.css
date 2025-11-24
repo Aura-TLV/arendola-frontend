@@ -1,0 +1,164 @@
+/* ===== DATE RANGE PANEL (Airbnb-like) ===== */
+.date-range-panel{
+  position:fixed;
+  left:50%;
+  top:96px;                     /* примерно под хедером */
+  transform:translateX(-50%);
+  width:min(980px, calc(100% - 32px));
+  max-height:80vh;
+  background-color:#ffffff;
+  border-radius:24px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.16);
+  padding:24px 32px 20px;
+  z-index:2000;
+  
+}
+
+/* tabs сверху */
+.dr-tabs{
+  display:flex;
+  justify-content:center;
+  gap:8px;
+  margin-bottom:20px;
+}
+
+.dr-tab{
+  border-radius:999px;
+  border:1px solid #dddddd;
+  background:#f5f5f5;
+  padding:6px 20px;
+  font-size:14px;
+  font-weight:500;
+  color:#444;
+}
+
+.dr-tab-active{
+  background:#ffffff;
+  border-color:#222222;
+  color:#222222;
+}
+
+/* два месяца рядом */
+.dr-content{
+  display:flex;
+  gap:40px;
+  justify-content:center;
+  margin-bottom:20px;
+}
+
+.dr-month{
+  width:50%;
+  min-width:300px;
+}
+
+.dr-month-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:8px;
+}
+
+.dr-month-title{
+  font-weight:600;
+  font-size:16px;
+}
+
+.dr-nav-btn{
+  width:32px;
+  height:32px;
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  background:#fff;
+  font-size:16px;
+  line-height:1;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+}
+
+/* будни */
+.dr-weekdays{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  font-size:12px;
+  color:#9AA0A6;
+  text-align:center;
+  margin-bottom:4px;
+}
+
+/* дни */
+.dr-days{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:4px;
+  font-size:14px;
+}
+
+.dr-day{
+  width:36px;
+  height:36px;
+  border-radius:999px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  margin:0 auto;
+}
+
+.dr-day-empty{
+  cursor:default;
+}
+
+/* диапазон + начало/конец диапазона чисто визуально */
+.dr-day-in-range{
+  background:#E5F2FF;
+  color:#000;
+}
+
+.dr-day-start,
+.dr-day-end{
+  background:#222222;
+  color:#ffffff;
+}
+
+/* нижние чипы */
+.dr-footer{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:8px;
+}
+
+.dr-chip{
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  background:#ffffff;
+  padding:6px 14px;
+  font-size:14px;
+  color:#444;
+}
+
+.dr-chip-active{
+  border-color:#222222;
+}
+
+/* адаптив: на мобильном календарь во всю ширину */
+@media (max-width: 767.98px){
+  .date-range-panel{
+    left:16px;
+    right:16px;
+    transform:none;
+    width:auto;
+    padding:16px 16px 14px;
+  }
+  .dr-content{
+    flex-direction:column;
+    gap:16px;
+  }
+  .dr-month{
+    width:100%;
+    min-width:0;
+  }
+}
+

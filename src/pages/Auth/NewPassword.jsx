@@ -1,9 +1,8 @@
-// src/pages/Auth/NewPassword.jsx
 import { useState } from 'react'
 // Если токены в ссылке (например /new-password/:uid/:token), раскомментирую:
 // import { useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import LanguageSwitcher from '../../components/LanguageSwitcher.jsx'
+//import LanguageSwitcher from '../../components/LanguageSwitcher.jsx'
 
 export default function NewPassword() {
   const { t } = useTranslation()
@@ -48,10 +47,6 @@ export default function NewPassword() {
       <div className="auth card shadow-sm border-0 rounded-4 w-100" style={{ maxWidth: '560px' }}>
         <div className="card-body p-4 p-md-5">
 
-          {/* переключатель языков справа сверху временно, когда будет готов компонент меню, перенесу туда */}
-          <div className="d-flex justify-content-end mb-2">
-            <LanguageSwitcher />
-          </div>
           
           <h1 className="auth-title mb-1">{t('newPassword.title')}</h1>
           <p className="auth-subtitle mb-4">{t('newPassword.subtitle')}</p>

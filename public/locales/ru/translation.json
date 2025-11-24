@@ -57,5 +57,87 @@
     "mismatch": "Пароли не совпадают",
     "tooShort": "Пароль должен быть не короче 10 символов",
     "fail": "Не удалось изменить пароль. Попробуйте ещё раз."
-  }
+  },
+
+  "header": {
+    "regionLabel": "Краснодарский край",
+    "datesLabel": "20 дек 2025 – 20 фев 2026",
+    "guestsWord": " гостей",
+    "rentOut": "Сдать жильё",
+
+    "searchAria": "Поиск",
+    "favAria": "Мой выбор",
+    "notificationsAria": "Уведомления",
+    "profileAria": "Профиль",
+    "helpAria": "Помощь",
+    "messagesAria": "Сообщения"
+  },
+
+  "filters": {
+  "price": "Цена",
+  "houseTypes": "Дом · Отдельный, Часть дома, Таунхаус ·",
+  "districtMetro": "Район / Метро",
+  "allFilters": "Все фильтры",
+  "clear": "Очистить"
+},
+
+"listingToolbar": {
+  "found": "В Геленджике для вас найдено",
+  "foundNum": " предложений",
+  "sortLabel": "Сортировать",
+  "sortDefault": "По умолчанию",
+  "sortPrice": "Цена",
+  "sortRating": "Рейтинг",
+  "sortNew": "Новизна",
+  "sortPopular": "Популярность"
+},
+
+"offersCard": {
+  "typeFlat1": "1-к квартира",
+  "typeApartHotel": "Апарт-отель",
+  "ratingReviews": "12 отзывов",
+  "title1": "Современная студия у парка с балконом и видом",
+  "title2": "Дизайнерский апартамент с видом на море и горы",
+  "availableFrom": "Доступно с 1 янв 2026",
+  "priceNote": "/мес",
+  "monthShort": "мес",
+  "priceTooltip": "Онлайн оплачивается только первый месяц; аренда + разовый сервисный сбор 10 %. Далее - оплата напрямую хозяину.",
+  "chipLockedTooltip": "Недоступно на этот период",
+  "chipMidTooltip": "От 2 до 5 мес в этом диапазоне",
+  "chipShortTooltip": "От 1 мес в этом диапазоне",
+  "chipLongTooltip": "От 6 мес в этом диапазоне",
+  "maxTerm": "Макс. срок аренды: 11 мес.",
+  "onRequest": "По запросу",
+  "newLabel": "Новинка"
+},
+
+"map": {
+    "title": "Карта",
+    "hoverMock": "Подсвечен объект №{{id}}"
+  },
+
+"datePanel": {
+  "tabDates": "Даты",
+  "tabMonths": "Месяцы",
+  "tabFlexible": "Гибко",
+  "monthLeft": "Ноябрь 2025",
+  "monthRight": "Декабрь 2025",
+  "weekMon": "П",
+  "weekTue": "В",
+  "weekWed": "С",
+  "weekThu": "Ч",
+  "weekFri": "П",
+  "weekSat": "С",
+  "weekSun": "В",
+  "chipExact": "Точные даты",
+  "chipPlus1": "± 1 день",
+  "chipPlus2": "± 2 дня",
+  "chipPlus3": "± 3 дня",
+  "chipPlus7": "± 7 дней",
+  "chipPlus14": "± 14 дней"
+}
+
+
+
+
 }

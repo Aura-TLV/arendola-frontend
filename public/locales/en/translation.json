@@ -57,5 +57,87 @@
     "mismatch": "Passwords do not match",
     "tooShort": "Password must be at least 10 characters",
     "fail": "Couldn’t update password. Try again."
-  }
+  },
+
+  "header": {
+    "regionLabel": "Krasnodar Krai",
+    "datesLabel": "20 Dec 2025 – 20 Feb 2026",
+    "guestsWord": " guests",
+    "rentOut": "List your place",
+
+    "searchAria": "Search",
+    "favAria": "My picks",
+    "notificationsAria": "Notifications",
+    "profileAria": "Profile",
+    "helpAria": "Help",
+    "messagesAria": "Messages"
+  },
+
+  "filters": {
+  "price": "Price",
+  "houseTypes": "House · Entire home, Part of house, Townhouse ·",
+  "districtMetro": "Area / Metro",
+  "allFilters": "All filters",
+  "clear": "Clear"
+},
+
+"listingToolbar": {
+  "found": "We found for you in Gelendzhik",
+  "foundNum": " listings",
+  "sortLabel": "Sort",
+  "sortDefault": "Default",
+  "sortPrice": "Price",
+  "sortRating": "Rating",
+  "sortNew": "Newest",
+  "sortPopular": "Popular"
+},
+
+"offersCard": {
+  "typeFlat1": "1-room apartment",
+  "typeApartHotel": "Aparthotel",
+  "ratingReviews": "12 reviews",
+  "title1": "Modern studio near the park with balcony and view",
+  "title2": "Designer apartment with sea and mountain view",
+  "availableFrom": "Available from Jan 1, 2026",
+  "priceNote": "/month",
+  "monthShort": "mo",
+  "priceTooltip": "Online payment only for the first month: rent + one-time 10% service fee. Afterwards you pay the owner directly.",
+  "chipLockedTooltip": "Not available for this period",
+  "chipMidTooltip": "From 2 to 5 months in this range",
+  "chipShortTooltip": "From 1 month in this range",
+  "chipLongTooltip": "From 6 months in this range",
+  "maxTerm": "Maximum rental term: 11 months",
+  "onRequest": "On request",
+  "newLabel": "New"
+},
+
+"map": {
+    "title": "Map",
+    "hoverMock": "Highlighted property #{{id}}"
+  },
+
+"datePanel": {
+  "tabDates": "Dates",
+  "tabMonths": "Months",
+  "tabFlexible": "Flexible",
+  "monthLeft": "November 2025",
+  "monthRight": "December 2025",
+  "weekMon": "M",
+  "weekTue": "T",
+  "weekWed": "W",
+  "weekThu": "T",
+  "weekFri": "F",
+  "weekSat": "S",
+  "weekSun": "S",
+  "chipExact": "Exact dates",
+  "chipPlus1": "± 1 day",
+  "chipPlus2": "± 2 days",
+  "chipPlus3": "± 3 days",
+  "chipPlus7": "± 7 days",
+  "chipPlus14": "± 14 days"
+}
+
+
+
+
 }
