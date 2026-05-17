@@ -760,3 +760,643 @@
 .sort-option{
   font-size: 13px;
 }
+
+
+
+
+/* SEGMENT (тип жилья) */
+.segment-control{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.segment-btn{
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  background:#ffffff;
+  padding:6px 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+}
+.segment-btn-active{
+  border-color:var(--green);
+  background:#E5F5E8;
+}
+
+/* CHIPS */
+.chips-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.filter-chip{
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  background:#ffffff;
+  padding:6px 12px;
+  font-size:13px;
+}
+.filter-chip-active{
+  background:#E5F5E8;
+  border-color:var(--green);
+}
+
+/* inline inputs (цена, площадь и т.п.) */
+.filters-inline-inputs{
+  display:flex;
+  gap:8px;
+}
+.filters-input-pill{
+  position:relative;
+  flex:1;
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  padding:2px 10px;
+  display:flex;
+  align-items:center;
+}
+.filters-input-pill .form-control{
+  border:none;
+  box-shadow:none;
+  font-size:14px;
+}
+.filters-input-pill .form-control:focus{
+  box-shadow:none;
+}
+.filters-input-clear{
+  position:absolute;
+  right:4px;
+  border:none;
+  background:transparent;
+  width:24px;
+  height:24px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* range + чекбоксы */
+.filters-range{
+  padding:4px 4px 0;
+}
+.filters-range input[type="range"]{
+  width:100%;
+}
+.filters-checkbox-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  margin-top:8px;
+}
+
+/* field pills (Метро / Район) */
+.filters-field-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.filters-field-pill{
+  width:100%;
+  max-width:260px;
+  border-radius:999px;
+  border:1px solid #d9d9d9;
+  padding:8px 12px;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.filters-field-pill-left{
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.filters-field-pill-label{
+  font-size:13px;
+}
+.filters-field-pill-value{
+  font-size:13px;
+}
+.filters-field-pill-empty .filters-field-pill-value{
+  color:var(--muted);
+}
+.filters-field-pill-icon{
+  font-size:16px;
+}
+.filters-field-pill-arrow{
+  font-size:12px;
+  color:var(--muted);
+}
+
+/* FOOTER */
+.filters-footer{
+  border-top:1px solid #f0f0f0;
+  padding:12px 24px;
+  background:#ffffff;
+}
+.filters-footer-note{
+  font-size:14px;
+}
+.filters-footer .btn.btn-brand{
+  min-width:220px;
+}
+
+/* адаптив */
+@media (max-width: 575.98px){
+  .filters-panel{
+    width:100%;
+    height:100%;
+    max-height:none;
+    border-radius:0;
+  }
+}
+
+
+/* 31.03.26 - Новые стили добавила */
+
+/* =========================================
+   LISTING MOBILE FIX
+   аккуратные правки без ломки десктопа
+========================================= */
+
+/* чтобы карточка не вылезала по ширине */
+.offer-card,
+.offer-card .card-body,
+.offer-card-photo,
+.offer-card-main,
+.offer-card-side {
+  min-width: 0;
+}
+
+.offer-card .card-body {
+  align-items: flex-start;
+}
+
+/* карта на планшете/мобиле уходит вниз, лучше скрыть */
+@media (max-width: 991.98px) {
+  .listing-map {
+    display: none;
+  }
+}
+
+/* ---------- tablet ---------- */
+@media (max-width: 991.98px) {
+  .offer-carousel,
+  .offer-carousel .carousel-inner,
+  .offer-carousel .carousel-item {
+    width: 200px;
+    height: 140px;
+  }
+
+  .offer-card-photo img {
+    width: 200px;
+    height: 140px;
+  }
+
+  .offer-card-side {
+    min-width: 160px;
+  }
+
+  .offer-term-chips {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+/* ---------- mobile ---------- */
+@media (max-width: 767.98px) {
+  .listing-header .container-xxl {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .brand-logo-img {
+    height: 28px;
+  }
+
+  .listing-search {
+    order: 3;
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border-radius: 14px;
+  }
+
+  .search-divider {
+    margin: 0 10px;
+  }
+
+  .listing-header-actions {
+    margin-left: auto;
+    gap: 8px !important;
+  }
+
+  .listing-header .btn.btn-brand.listing-cta {
+    height: 40px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  /* фильтры */
+  .listing-filters .container-xxl {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    scrollbar-width: none;
+  }
+
+  .listing-filters .container-xxl::-webkit-scrollbar {
+    display: none;
+  }
+
+  .listing-filters .btn-filter {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .listing-filters .ms-auto {
+    margin-left: 0 !important;
+  }
+
+  /* тулбар */
+  .listing-toolbar .container-xxl {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    flex-direction: column;
+    gap: 8px !important;
+  }
+
+  .sort-menu {
+    left: 0;
+    right: auto;
+  }
+
+  /* КРИТИЧНО: меняем реальный flex-контейнер карточки */
+  .offer-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px !important;
+    padding: 12px !important;
+  }
+
+  .offer-card-photo {
+    width: 100%;
+  }
+
+  .offer-carousel,
+  .offer-carousel .carousel-inner,
+  .offer-carousel .carousel-item,
+  .offer-card-photo img {
+    width: 100%;
+    height: 220px;
+    border-radius: 12px;
+  }
+
+  .offer-card-main {
+    width: 100%;
+  }
+
+  .offer-card-main > .d-flex:first-child {
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: flex-start !important;
+  }
+
+  .offer-rating {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .offer-title {
+    font-size: 16px;
+    line-height: 1.35;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .offer-meta {
+    font-size: 13px;
+    line-height: 1.4;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .offer-card-side {
+    width: 100%;
+    min-width: 0;
+    padding-left: 0;
+    margin-left: 0 !important;
+    align-items: stretch;
+  }
+
+  .offer-card-side::before {
+    display: none;
+  }
+
+  .offer-card-side-content {
+    width: 100%;
+    align-items: flex-start;
+    text-align: left !important;
+  }
+
+  .offer-price {
+    font-size: 18px;
+    line-height: 1.25;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .offer-price-note-with-tooltip {
+    flex-wrap: wrap;
+  }
+
+  .offer-tooltip-bubble {
+    left: 0;
+    right: auto;
+    min-width: 220px;
+    max-width: min(280px, calc(100vw - 32px));
+  }
+
+  .offer-term-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px !important;
+    justify-content: flex-start;
+  }
+
+  .offer-chip {
+    min-width: 64px;
+  }
+
+  .offer-max-term {
+    margin-top: 6px;
+  }
+
+  .btn-request {
+    margin-top: 10px;
+    align-self: flex-start;
+  }
+
+  /* нижний футер на мобиле можно не показывать на листинге */
+  .listing-page footer {
+    display: none;
+  }
+}
+
+/* ---------- very small phones ---------- */
+@media (max-width: 420px) {
+  .offer-carousel,
+  .offer-carousel .carousel-inner,
+  .offer-carousel .carousel-item,
+  .offer-card-photo img {
+    height: 200px;
+  }
+
+  .offer-chip {
+    padding: 6px 8px;
+    min-width: 58px;
+  }
+
+  .offer-chip-value {
+    font-size: 11px;
+  }
+
+  .offer-chip-label {
+    font-size: 10px;
+  }
+}
+
+
+
+
+/* =========================
+   MOBILE HEADER / SEARCH FIX
+========================= */
+@media (max-width: 767.98px) {
+  .listing-header .container-xxl {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  /* логотип */
+  .brand-logo-link {
+    flex: 0 0 auto;
+    max-width: 104px;
+    overflow: hidden;
+  }
+
+  .brand-logo-img {
+    height: 24px;
+    width: auto;
+    display: block;
+  }
+
+  /* верхний ряд справа */
+  .listing-header-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end;
+  }
+
+  .btn-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    font-size: 16px;
+    flex: 0 0 36px;
+  }
+
+  /* скрываем лишнее на мобиле */
+  .listing-header-actions .btn-icon.d-none.d-md-inline-flex,
+  .header-help-wrapper {
+    display: none !important;
+  }
+
+  /* зеленая кнопка */
+  .listing-header .btn.btn-brand.listing-cta {
+    height: 36px;
+    padding: 0 14px;
+    border-radius: 18px;
+    font-size: 12px;
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
+
+  /* поиск во 2 строку */
+  .listing-search {
+    order: 3;
+    width: 100%;
+    max-width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 14px;
+    margin: 0;
+  }
+
+  .search-line {
+    min-width: 0;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .listing-search .search-item {
+    font-size: 12px;
+    line-height: 1.2;
+    min-width: 0;
+  }
+
+  .search-item.search-item-input {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .search-input {
+    width: 100%;
+    min-width: 0;
+    font-size: 12px;
+    padding: 0;
+  }
+
+  .search-input::placeholder {
+    text-overflow: ellipsis;
+  }
+
+  .search-divider {
+    margin: 0 8px;
+    height: 20px;
+    flex: 0 0 1px;
+  }
+
+  /* даты на мобиле скрываем */
+  .search-item.search-item-dates {
+    display: none !important;
+  }
+
+  /* гости */
+  .search-line > .search-item:last-of-type {
+    flex: 0 1 auto;
+    max-width: 92px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .search-submit-btn {
+    margin-left: 8px;
+    flex: 0 0 auto;
+  }
+
+  .search-submit-btn i {
+    font-size: 16px;
+  }
+}
+
+
+/* ===== FIX правого блока карточки (desktop) ===== */
+
+.offer-card-side {
+  min-width: 220px;
+}
+
+.offer-price {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.offer-term-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.offer-card-side-content {
+  white-space: normal;
+}
+
+
+
+/* ===== Доработка правой части карточки ===== */
+
+.offer-card-side {
+  min-width: 240px;
+}
+
+.offer-card-side-content {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+
+.offer-price {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.offer-term-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.offer-max-term {
+  margin-top: 12px;
+  line-height: 1.35;
+  text-align: right;
+}
+
+.btn-request {
+  margin-top: 12px;
+  align-self: flex-end;
+}
+
+/* ===== Баланс ширины центрального и правого блока ===== */
+
+.offer-card .card-body {
+  align-items: stretch;
+}
+
+.offer-card-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  max-width: none;
+}
+
+.offer-card-side {
+  flex: 0 0 220px;
+  min-width: 220px;
+  max-width: 220px;
+}
+
+.offer-card-side::before {
+  left: -10px;
+}
+
+
+

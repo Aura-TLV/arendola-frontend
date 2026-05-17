@@ -4,6 +4,7 @@ import ListingFilters from '../../components/listing/ListingFilters.jsx';
 import ListingToolbar from '../../components/listing/ListingToolbar.jsx';
 import OffersList from '../../components/listing/OffersList.jsx';
 import ListingMap from '../../components/listing/ListingMap.jsx';
+import Footer from '../../components/layout/Footer.jsx';
 
 export default function ListingPage() {
   // id карточки, над которой сейчас ховер
@@ -34,6 +35,7 @@ export default function ListingPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

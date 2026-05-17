@@ -66,10 +66,11 @@
     "rentOut": "List your place",
 
     "searchAria": "Search",
-    "favAria": "My picks",
+    "favAria": "Favourites",
     "notificationsAria": "Notifications",
     "profileAria": "Profile",
     "helpAria": "Help",
+    "feedbackAria": "Feedback",
     "messagesAria": "Messages"
   },
 

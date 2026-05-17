@@ -2,7 +2,7 @@
 .date-range-panel{
   position:fixed;
   left:50%;
-  top:96px;                     /* примерно под хедером */
+  top:96px;
   transform:translateX(-50%);
   width:min(980px, calc(100% - 32px));
   max-height:80vh;
@@ -11,7 +11,6 @@
   box-shadow:0 18px 45px rgba(0,0,0,0.16);
   padding:24px 32px 20px;
   z-index:2000;
-  
 }
 
 /* tabs сверху */
@@ -104,22 +103,36 @@
   justify-content:center;
   cursor:pointer;
   margin:0 auto;
+
+  border: 0;
+  background: transparent;
+  padding: 0;
 }
+
+
 
 .dr-day-empty{
   cursor:default;
 }
 
-/* диапазон + начало/конец диапазона чисто визуально */
+.dr-day:not(.dr-day-empty):hover{
+  background:#E5F5E8;
+}
+
 .dr-day-in-range{
-  background:#E5F2FF;
-  color:#000;
+  background:#E5F5E8;
+  color:#222222;
+}
+
+.dr-day-today{
+  background:#222222;
+  color:#ffffff;
 }
 
 .dr-day-start,
 .dr-day-end{
-  background:#222222;
-  color:#ffffff;
+  background:#D9D9D9;  /* светло-серый */
+  color:#222222;
 }
 
 /* нижние чипы */
@@ -143,7 +156,194 @@
   border-color:#222222;
 }
 
-/* адаптив: на мобильном календарь во всю ширину */
+/* =========================================================
+   ---- Months UI ----
+   Делает "Срок аренды" и "Месяцы заезда" по центру,
+   чипы как в Dates, без горизонтального скролла (только стрелки)
+   ========================================================= */
+
+.dr-months-ui{
+  padding: 18px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+/* каждый блок по центру и ограничиваем ширину */
+.dr-block{
+  width: 100%;
+  max-width: 720px;
+  margin: 0;
+}
+
+/* заголовки ("Срок аренды", "Месяцы заезда") */
+.dr-block-title{
+  font-weight: 600;
+  font-size: 16px;
+  text-align: center;
+  margin: 0 0 12px 0;
+  color: #222222;
+}
+
+/* stepper по центру */
+.dr-stepper{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.dr-stepper-btn{
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dr-stepper-btn:hover{
+  background: #f5f5f5;
+}
+
+.dr-stepper-value{
+  min-width: 140px;
+  padding: 10px 16px;
+  border: 1px solid #d9d9d9;
+  border-radius: 16px;
+  text-align: center;
+  background: #fff;
+}
+
+.dr-stepper-num{
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.dr-stepper-caption{
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}
+
+/* Обёртка для ленты месяцев со стрелками */
+.dr-months-slider{
+  position: relative;
+  display:flex;
+  align-items:center;
+  width: 100%;
+}
+
+/* Лента месяцев — БЕЗ scrollbar */
+.dr-month-cards{
+  display: flex;
+  gap: 10px;
+  overflow: hidden;          /* важно: убрали scroll bar */
+  padding: 2px 44px;         /* место под стрелки слева/справа */
+  scroll-behavior: smooth;
+}
+
+/* Кнопка месяца — как чипы в "Даты" */
+.dr-month-card{
+  flex: 0 0 auto;
+  min-width: 140px;
+  padding: 10px 14px;
+  border-radius: 999px;      /* как dr-chip */
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  text-align: center;
+  font-size: 14px;
+  color: #444;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dr-month-card:hover{
+  background: #E5F5E8;
+}
+
+/* active — такая же обводка как у dr-chip-active */
+.dr-month-card-active{
+  border-color: #222222;
+}
+
+/* Если у тебя внутри карточки есть title — просто делаем обычным текстом */
+.dr-month-card-title{
+  font-weight: 600;
+}
+
+/* Стрелки (как у Airbnb) */
+.dr-months-arrow{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: 1px solid #d9d9d9;
+  background: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  cursor: pointer;
+  z-index: 2;
+}
+
+.dr-months-arrow:hover{
+  background: #f5f5f5;
+}
+
+.dr-months-arrow-prev{ left: 0; }
+.dr-months-arrow-next{ right: 0; }
+
+/* 04.02.2026 */
+
+/* контейнер месяцев — как контейнер чипов в Датах */
+.dr-month-cards{
+  display:flex;
+  gap:12px;
+  align-items:center;
+
+  padding-left: 56px;   /* место под левую стрелку */
+  padding-right: 56px;  /* место под правую стрелку */
+
+  overflow:hidden;            /* ✅ скрываем полосу */
+  scrollbar-width:none;       /* firefox */
+  -ms-overflow-style:none;    /* old edge */
+  padding: 6px 0;
+}
+.dr-month-cards::-webkit-scrollbar{ display:none; } /* chrome/safari */
+
+
+.dr-month-cards .dr-chip {
+  white-space: nowrap;
+  line-height: 1;        
+  flex: 0 0 auto;      
+  padding: 10px 16px;   
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.dr-hint{
+  text-align: center;
+  font-size: 13px;        /* можно 13px если надо мельче */
+  color: #9aa0a6;         /* muted серый */
+  margin: 6px 0 10px;     /* чтобы было “над” заголовком */
+  font-weight: 300;
+}
+
+
+
+/* =========================================================
+   адаптив: на мобильном календарь во всю ширину
+   ========================================================= */
 @media (max-width: 767.98px){
   .date-range-panel{
     left:16px;
@@ -152,13 +352,26 @@
     width:auto;
     padding:16px 16px 14px;
   }
+
   .dr-content{
     flex-direction:column;
     gap:16px;
   }
+
   .dr-month{
     width:100%;
     min-width:0;
   }
-}
 
+  .dr-block{
+    max-width: 100%;
+  }
+
+  .dr-month-cards{
+    padding: 2px 40px;
+  }
+
+  .dr-month-card{
+    min-width: 130px;
+  }
+}

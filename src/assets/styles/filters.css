@@ -1,0 +1,1001 @@
+/* =========================
+   BIG FILTERS MODAL (Квартира)
+   ========================= */
+
+.filters-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:2500;
+  display:none;                  /* по умолчанию скрыта */
+  align-items:center;
+  justify-content:center;
+}
+
+/* модалка открыта */
+.filters-backdrop.is-open{
+  display:flex;
+}
+
+/* сама панель */
+.filters-panel{
+  width:min(880px, 100% - 32px); /* было 700px — сделал шире */
+  max-height:calc(100vh - 48px);
+  background:#ffffff;
+  border-radius:24px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.16);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+  font-family:var(--font-sans);
+  color:var(--text);
+}
+
+
+
+/* хедер */
+.filters-header{
+  position:sticky;
+  top:0;
+  z-index:2;
+  padding:16px 24px 16px;
+  border-bottom:1px solid #e0e0e0;
+  background:#ffffff;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.filters-title{
+  font-size:18px;
+  font-weight:600;
+  margin:0;
+}
+
+.filters-close-btn{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:20px;
+  line-height:1;
+  align-self:flex-start;   
+  margin-top:-4px;         
+}
+
+
+.filters-reset-btn{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:14px;
+  color:var(--muted);
+}
+.filters-reset-btn:disabled{
+  color:#c2c2c2;
+  cursor:default;
+}
+
+/* кнопка "Показать выбранные фильтры" под хедером */
+/* кнопка "Показать выбранные фильтры" под хедером */
+.filters-picked-bar{
+  padding:12px 24px 4px;
+  background:#ffffff;
+  border-bottom:none;
+  display:flex;              /* была center, оставим просто flex */
+}
+
+/* КНОПКА "Показать выбранные фильтры" — закрытое состояние */
+.btn-filters-picked{
+  display:flex;
+  align-items:center;
+  gap:10px;
+
+  width:100%;
+  height:48px;
+  padding:0 20px;
+
+  border-radius:999px;
+  border:1px solid #E5F5E8;
+  background:#f8f9fa;
+
+  font-size:14px;
+  line-height:1;
+  color:var(--green);
+
+  justify-content:flex-start; /* ← ВСЁ влево */
+}
+
+
+/* стрелка */
+.btn-filters-picked .filters-picked-arrow{
+  font-size:14px;
+  transition:transform .15s ease;
+  margin-left:auto;
+}
+
+
+/* открытое состояние кнопки */
+/* открытое состояние кнопки */
+.btn-filters-picked.is-open{
+  background:#ffffff;
+  color:var(--text);              /* как остальные заголовки/лейблы */
+}
+
+/* стрелка вверх, когда открыт список */
+.btn-filters-picked.is-open .filters-picked-arrow{
+  transform:rotate(180deg);
+}
+
+
+.filters-panel-picked-closed .filters-picked-bar{
+  padding-bottom:24px; /* подбери 20–24px по вкусу */
+}
+
+
+/* чипы под кнопкой — центр */
+/* контейнер с чипами */
+.filters-summary{
+  padding:4px 24px 24px;
+  display:none;
+  flex-wrap:wrap;
+  gap:6px;
+  justify-content:flex-start;
+  border-bottom:1px solid #f5f5f5;
+}
+.filters-summary.is-open{
+  display:flex;
+}
+
+/* сами чипы — бледно-зелёные, без рамки, текст зелёный */
+.filters-summary-chip{
+  border:none;
+  border-radius:999px;
+  background:#E5F5E8;
+  font-size:12px;
+  padding:3px 10px;
+  color:var(--green);
+}
+
+/* текст "+ ещё N" после чипов */
+.filters-summary-more{
+  font-size:12px;
+  color:var(--green);
+  margin-left:4px;
+  align-self:center;
+}
+
+
+
+
+/* основное тело */
+.filters-body{
+  padding:16px 24px 18px;
+  overflow:auto;
+  background:#f5f5f5;          /* чуть темнее, чем #FAFAFA */
+  border-top:1px solid #f0f0f0; /* та самая линия над "Тип жилья" */
+}
+
+
+.filters-body .form-check-label{
+  font-size:13px;   /* такой же, как в инпутах и чипах */
+}
+
+/* одинаковый стиль чекбоксов во всей системе:
+   блок Цена, метро, район и т.д. */
+.filters-body .form-check-input:checked,
+.subfilters-panel .form-check-input:checked{
+  background-color:#E5F5E8; /* бледно-зеленый фон */
+  border-color:var(--green);
+  box-shadow:none;
+  background-image:url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23009E36' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M4.5 8.5l2.5 2.5 5-5'/%3e%3c/svg%3e");
+}
+
+
+/* секции */
+.filter-section{
+  margin-bottom:22px;
+}
+
+.filter-section-header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.filter-section-title{
+  font-size:14px;
+  font-weight:600;
+}
+
+.filter-section-note{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.filter-subtitle-muted{
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+
+/* сегменты типов жилья — 4 кнопки в одну строку на десктопе */
+/* сегменты типов жилья — 4 кнопки в одну строку на десктопе */
+.segment-control{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:12px;
+}
+
+/* единый стиль для сегментов (тип жилья) */
+/* единый стиль для сегментов (тип жилья) */
+.segment-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+
+  height:56px;
+  padding:0 16px;
+
+  border-radius:8px;
+  background:#d9d9d9;
+
+  /* было border:1px solid transparent; */
+  border:1px solid #cccccc;           /* чуть темнее d9d9d9 */
+
+  font-size:14px;
+  line-height:1;
+  color:#222222;
+  font-weight:500;
+
+  /* лёгкая тень, чтобы блоки читались как главные */
+  box-shadow:0 2px 4px rgba(0,0,0,0.04);
+}
+
+
+.segment-btn span{
+  white-space:nowrap;
+}
+
+.segment-btn i{
+  font-size:20px;
+  flex:0 0 24px;
+  display:flex;
+  justify-content:center;
+}
+
+.segment-btn-active{
+  border-color:var(--green);
+  background:#cfcfcf;
+}
+
+
+
+/* Универсальные табы, как "Общая / Кухня" */
+.filters-area-tabs-row{
+  display:flex;
+  gap:10px;
+  margin-bottom:24px;
+}
+
+
+.area-tab-btn{
+  flex:1 1 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  height:40px;               /* ниже, чем 56px у Тип жилья */
+  padding:0 16px;
+
+  border-radius:8px;         /* как segment-btn */
+  border:1px solid #cccccc;
+  background:#F5F5F5;
+
+  font-size:14px;
+  line-height:1;
+  font-weight:500;
+  color:#222222;
+  white-space:nowrap;
+}
+
+/* активный таб — как тип жилья: зелёная рамка, белый фон */
+.area-tab-btn.area-tab-btn-active{
+  border-color:var(--green);
+  
+}
+
+
+
+
+
+/* маленькие чипы (подтипы, пресеты и т.п.) */
+.chips-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+/* базовый чип: до 40px высота, радиус 16, серая обводка, текст #666, без заливки */
+.filter-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+
+  height:40px;             /* ← фиксируем высоту строго */
+  padding:0 14px;
+  min-width: 48px;
+
+  border-radius:16px;
+  border:1px solid #d9d9d9;
+  background:transparent;
+
+  font-size:12px;
+  line-height:1;           /* ← ключевой момент! иначе тянет высоту */
+  color:#666666;
+}
+
+
+.filter-chip span{
+  white-space:nowrap;
+}
+
+/* активный: только зелёная обводка и зелёный текст, фон остаётся белый */
+.filter-chip-active{
+  border-color:#cccccc;
+  color:var(--green);
+  background:#e4e4e4;
+}
+
+
+
+
+/* чипы оранжевые (скидка по длительности) */
+.filter-chip-orange{
+  border-radius:16px;           /* было 12 */
+  border:1px solid var(--orange);
+  background:#fff7e6;
+  font-size:12px;
+  padding:0 10px;
+  min-height:40px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:72px;
+  text-align:center;
+  color:var(--orange-deep);
+  font-weight:600;
+}
+.filter-chip-orange-active{
+  background:var(--orange);
+  border-color:var(--orange);
+  color:#ffffff;
+}
+
+
+/* ряд инпутов */
+.filters-inline-inputs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.filters-inline-inputs .filters-input-min,
+.filters-inline-inputs .filters-input-max{
+  flex:1 1 0;
+}
+
+.filters-input-pill{
+  position:relative;
+}
+
+.filters-input-pill .form-control{
+  height:40px;         /* побольше, почти квадратное поле */
+  border-radius:4px;   /* такой же радиус, как у сегмент-кнопок */
+  padding-right:28px;
+}
+
+
+/* крестик очистки */
+.filters-input-clear{
+  position:absolute;
+  right:10px;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:14px;
+  color:#bbbbbb;
+}
+
+/* range */
+.filters-range{
+  margin-top:10px;
+}
+.filters-range input[type="range"]{
+  -webkit-appearance:none;
+  width:100%;
+  height:4px;
+  border-radius:999px;
+  background:#d9d9d9;
+}
+
+/* ползунок webkit (Chrome, Edge, Safari) */
+.filters-range input[type="range"]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:var(--green);
+  cursor:pointer;
+  margin-top:-1px; /* чтобы центр совпал с треком */
+}
+
+/* Firefox */
+.filters-range input[type="range"]::-moz-range-thumb{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  background:var(--green);
+  border:none;
+  cursor:pointer;
+  margin-top:-1px;
+}
+.filters-range input[type="range"]::-moz-range-track{
+  height:4px;
+  border-radius:999px;
+  background:#d9d9d9;
+}
+
+
+/* чекбоксы под ценой */
+.filters-checkbox-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  margin-top:10px;
+}
+
+
+/* поля "Метро / Район / Адрес" — кликабельные пиллы */
+.filters-field-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.filters-field-pill{
+  flex:1 1 160px;
+  border-radius:14px;
+  border:1px solid #d9d9d9;
+  background:#ffffff;
+  padding:8px 12px;
+  font-size:13px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+/* левая часть пилла: иконка + слово "Метро"/"Район" в одну линию */
+.filters-field-pill-left{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+
+
+
+/* подпись слева (Метро/Район) */
+.filters-field-pill-label{
+  font-size:14px;
+  color:var(--text);
+}
+
+
+/* значение справа по умолчанию — бледно-серый */
+.filters-field-pill-value{
+  font-size:14px;
+  color:#bbbbbb !important;
+}
+
+/* когда уже что-то выбрано — делаем текст обычным */
+.filters-field-pill-has-value .filters-field-pill-value{
+  color:var(--text);
+}
+
+
+
+
+.filters-field-pill-icon{
+  font-size:16px;
+  color:var(--muted);
+  flex:0 0 auto;
+}
+
+/* текстовая часть — колонкой */
+.filters-field-pill-text{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+/* стрелка справа */
+.filters-field-pill-arrow{
+  font-size:12px;
+  color:var(--hint);
+  flex:0 0 auto;
+}
+
+.filters-field-pills .filters-field-pill{
+  flex:1 1 0;
+}
+
+
+
+/* табы (Площадь, Кровати, Санузел и т.п.) */
+.filters-tabs{
+  display:inline-flex;
+  padding:2px;
+  border-radius:14px;
+  background:#f5f5f5;
+  gap:2px;
+}
+.filters-tab-btn{
+  border:none;
+  background:transparent;
+  border-radius:12px;
+  padding:6px 12px;
+  font-size:13px;
+}
+.filters-tab-btn-active{
+  background:#ffffff;
+  box-shadow:0 0 0 .12rem rgba(0,0,0,0.06);
+}
+
+/* аккордеоны (Планировка и состояние, Характеристики дома и т.п.) */
+.filter-accordion{
+  border-radius:12px;
+  border:1px solid #e4e4e4;
+  padding:10px 12px;
+  background:#fafafa;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
+}
+
+.filter-accordion[open]{
+  background:#f5f5f5;
+  box-shadow:none;
+}
+
+
+.filter-accordion summary{
+  list-style:none;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+.filter-accordion summary::-webkit-details-marker{
+  display:none;
+}
+
+.filter-accordion-title{
+  font-size:15px;
+  font-weight:700;
+}
+
+.filter-accordion-meta{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.filter-accordion-body{
+  margin-top:12px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+
+.filter-accordion .accordion-chevron{
+  font-size:16px;
+}
+
+.filter-accordion[open] .accordion-chevron{
+  transform:rotate(180deg);
+}
+
+/* подпункты внутри аккордеона */
+.filter-subtitle{
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:4px;
+}
+
+/* "Очистить" в правой части заголовка секции / аккордеона */
+.filter-clear-link{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:12px;
+  color:var(--muted);
+}
+.filter-clear-link:hover{
+  text-decoration:underline;
+}
+
+/* футер */
+.filters-footer{
+  position:sticky;
+  bottom:0;
+  padding:10px 24px 16px;
+  border-top:1px solid #e0e0e0;
+  background:#ffffff;
+  z-index:2;
+}
+
+/* маленькая строка с подсказкой слева от кнопки (по желанию) */
+.filters-footer-inner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.filters-footer-note{
+  font-size:14px;            /* как в кнопке */
+  color:var(--muted);
+}
+
+
+/* кнопка CTA в футере */
+.filters-footer .btn.btn-brand{
+  min-width:220px;
+}
+
+/* адаптив: мобилка — full screen, без скруглений, хедер как в макете */
+@media (max-width: 767.98px){
+  .filters-backdrop{
+    align-items:stretch;
+    justify-content:stretch;
+  }
+  .filters-panel{
+    width:100%;
+    height:100%;
+    max-height:none;
+    border-radius:0;
+  }
+  .filters-header{
+    padding:12px 16px 8px;
+  }
+
+  .filters-summary,
+  .filters-body,
+  .filters-footer{
+    padding-left:16px;
+    padding-right:16px;
+  }
+
+  /* полоса под хедером — просто центрируем кнопку */
+
+
+
+  .segment-control{
+    display:grid;
+    grid-template-columns:repeat(2, 1fr); /* 2 кнопки в строке */
+    gap:8px;
+  }
+
+
+
+}
+
+
+/* =========================
+   SUBFILTER MODALS (Метро / Район)
+   ========================= */
+
+.subfilters-backdrop{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.35);
+  z-index:2600;                /* чуть выше основной модалки фильтров */
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.subfilters-backdrop.is-open{
+  display:flex;
+}
+
+.subfilters-panel{
+  width:min(540px, 100% - 32px);
+  max-height:calc(100vh - 48px);
+  background:#fafafa;
+  border-radius:20px;
+  box-shadow:0 18px 45px rgba(0,0,0,0.16);
+  display:flex;
+  flex-direction:column;
+  overflow:hidden;
+}
+
+.subfilters-header{
+  padding:12px 20px;
+  border-bottom:1px solid #e0e0e0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.subfilters-title{
+  font-size:16px;
+  font-weight:600;
+}
+
+.subfilters-close-btn{
+  border:none;
+  background:transparent;
+  padding:0;
+  font-size:18px;
+  line-height:1;
+}
+
+.subfilters-body{
+  padding:14px 20px 12px;
+  overflow:auto;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  font-size:14px;
+}
+
+.subfilters-search .form-control{
+  height:40px;
+  border-radius:999px;
+  font-size:14px;
+}
+
+.subfilters-search-hint{
+  font-size:12px;
+  color:var(--hint);
+  margin-top:4px;
+}
+
+.subfilters-subtitle{
+  font-size:13px;
+  font-weight:500;
+  margin-bottom:4px;
+}
+
+.subfilters-list{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+}
+
+.subfilters-check .form-check-input{
+  margin-top:0.1rem;
+}
+
+.subfilters-empty{
+  font-size:13px;
+  color:var(--muted);
+  margin:4px 0 0;
+}
+
+/* цветная точка линии метро */
+.subfilters-line-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  display:inline-block;
+  margin-right:6px;
+}
+.subfilters-line-dot-red{ background:#D32F2F; }
+.subfilters-line-dot-green{ background:#388E3C; }
+.subfilters-line-dot-blue{ background:#1976D2; }
+
+.subfilters-footer{
+  padding:10px 20px 14px;
+  border-top:1px solid #e0e0e0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+/* вторичная ссылка "Очистить" в футере саб-модалок (Метро, Район и т.п.) */
+.subfilters-footer .subfilters-clear{
+  color:var(--muted);
+  text-decoration:none;
+}
+
+.subfilters-footer .subfilters-clear:hover{
+  color:var(--text);     /* можно заменить на #666666, если хочешь мягче */
+  text-decoration:underline;
+}
+
+
+.subfilters-footer .btn.btn-link{
+  font-size:14px;
+  padding-left:0;
+  padding-right:0;
+}
+
+/* мобайл: full-screen bottom-sheet стиль */
+@media (max-width: 767.98px){
+  .subfilters-backdrop{
+    align-items:flex-end;
+  }
+  .subfilters-panel{
+    width:100%;
+    max-height:90vh;
+    border-radius:16px 16px 0 0;
+  }
+}
+
+
+@media (max-width: 767.98px){
+  .filters-footer-inner{
+    flex-direction: column;      /* текст сверху, кнопка снизу */
+    align-items: stretch;
+    text-align: left;            /* "Найдено..." одной строкой */
+    gap: 8px;
+  }
+
+  .filters-footer .btn.btn-brand.listing-cta{
+    width: 100%;                 /* кнопка на всю ширину мобилки */
+    justify-content: center;
+  }
+}
+
+
+
+/* Одинаковая ширина двух полей во всех блоках с диапазоном */
+.filters-inline-inputs > .filters-input-pill,
+.filters-inline-inputs > .filters-input-min,
+.filters-inline-inputs > .filters-input-max {
+  flex: 1 1 0;
+}
+
+/* Все инпуты и селекты внутри большой модалки — в один размер с чипами */
+.filters-body .form-control,
+.filters-body .form-select {
+  height: 40px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+/* Чуть уменьшаем вертикальные паддинги, чтобы не казались раздутыми */
+.filters-body .form-control {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+/* Кнопка в футере фильтров — как pills "Сдать жильё" */
+.filters-footer .btn.btn-brand.listing-cta{
+  height: 40px;          /* как в header */
+  padding: 0 18px;
+  border-radius: 20px;
+  font-size: 14px;       /* меньше, чем сейчас */
+  line-height: 1.2;
+}
+
+
+/* Более квадратные поля ввода в модалке фильтров (Цена, Площадь и т.п.) */
+.filters-panel .filters-inline-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.filters-panel .filters-input-pill {
+  position: relative;
+  flex: 1 1 0;
+  /* тут ломаем "таблетку" из listing.css */
+  border-radius: 8px;        /* или 0, если хочешь совсем без скругления */
+  border: 1px solid #d9d9d9;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+}
+
+.filters-panel .filters-input-pill .form-control {
+  border: none;
+  box-shadow: none;
+  height: 40px;
+  font-size: 14px;
+  padding-right: 28px;
+  border-radius: 0;          /* внутри пусть будет ровный прямоугольник */
+}
+
+.filters-panel .filters-input-clear {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: transparent;
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #bbbbbb;
+}
+
+/* Все надписи "Очистить" в модалках с подчёркиванием */
+.filters-reset-btn,
+.filter-clear-link,
+.subfilters-footer .subfilters-clear,
+.btn-clear  {
+  text-decoration: underline;
+}
+
+
+/* --- Пиллы "Метро / Район" внутри большой модалки фильтров --- */
+
+/* правая часть: текст + стрелка в одну линию с небольшим отступом */
+.filters-panel .filters-field-pill-right{
+  display: flex;
+  align-items: center;
+  gap: 4px;              /* небольшой зазор между "Не выбрано" и стрелкой */
+}
+
+/* базовый текст справа */
+.filters-panel .filters-field-pill-value{
+  font-size: 14px;
+}
+
+
+/* если появится выбранное значение — делаем обычный текст */
+.filters-panel .filters-field-pill-has-value .filters-field-pill-value{
+  color: var(--text);
+}
+
+
+
+
+/* оба пилла "Метро" и "Район" — одинаково широкие */
+.filters-panel .filters-field-pills .filters-field-pill {
+  flex: 1 1 0 !important;
+}
+
+
+
+
+/* Внутри большой модалки: два пилла в строку, вместе на всю ширину */
+.filters-panel .filters-field-pills {
+  display: flex;
+}
+
+.filters-panel .filters-field-pills .filters-field-pill {
+  flex: 0 0 calc(50% - 5px) !important;  /* по 50% строки с учётом gap */
+  max-width: calc(50% - 5px);
+}
+
+
+.filters-panel--mini {
+  max-height: 70vh;
+}
+
+
+
+
+
+
+
+
+
+

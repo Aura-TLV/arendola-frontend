@@ -8,6 +8,7 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import './assets/styles/main.css'
 import './assets/styles/listing.css';
 import './assets/styles/date-range.css';
+import './assets/styles/filters.css';
 
 
 import App from './App.jsx'
