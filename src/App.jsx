@@ -10,6 +10,7 @@ import ConfirmEmail from './pages/Auth/ConfirmEmail.jsx';
 import NewPassword from './pages/Auth/NewPassword.jsx';
 
 import ListingPage from './pages/Listing/ListingPage.jsx';
+import ObjectPage from "./pages/Object/ObjectPage.jsx";
 
 export default function App() {
   const navigate = useNavigate();
@@ -36,6 +37,8 @@ export default function App() {
           </>
         }
       />
+
+      <Route path="/object/:id" element={<ObjectPage />} />
 
       {/* Зарегистрироваться */}
       <Route

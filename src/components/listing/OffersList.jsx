@@ -3,8 +3,11 @@ import img1 from '../../assets/img/ar-img-1.png';
 import img1b from '../../assets/img/ar-img-1b.png';
 import img1c from '../../assets/img/ar-img-1c.png';
 
+import { useNavigate } from "react-router-dom";
+
 export default function OffersList({ onCardHover }) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -13,6 +16,22 @@ export default function OffersList({ onCardHover }) {
         className="offer-card card border-0 shadow-sm mb-3"
         onMouseEnter={() => onCardHover && onCardHover(1)}
         onMouseLeave={() => onCardHover && onCardHover(null)}
+        onClick={() =>
+          navigate("/object/1", {
+            state: {
+              initialBooking: {
+                tariffId: "2_5m",
+                stayDays: 60,
+              },
+              objectData: {
+                min_stay: 60,
+                max_stay: 365,
+                available_from: "1 января 2026",
+              },
+            },
+          })
+        }
+        style={{ cursor: "pointer" }}
       >
         <div className="card-body p-3 d-flex gap-3">
           {/* Фото + карусель */}
@@ -41,6 +60,7 @@ export default function OffersList({ onCardHover }) {
                   data-bs-target="#offerCarousel1"
                   data-bs-slide-to="0"
                   className="active"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
                 <button
                   type="button"
@@ -60,6 +80,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel1"
                 data-bs-slide="prev"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-left"></i>
               </button>
@@ -68,6 +89,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel1"
                 data-bs-slide="next"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-right"></i>
               </button>
@@ -77,6 +99,7 @@ export default function OffersList({ onCardHover }) {
               className="offer-fav-btn"
               type="button"
               aria-label={t('header.favAria')}
+              onClick={(e) => e.stopPropagation()}
             >
               <i className="bi bi-heart"></i>
             </button>
@@ -185,7 +208,7 @@ export default function OffersList({ onCardHover }) {
               </div>
             </div>
 
-            <button type="button" className="btn btn-request">
+            <button type="button" className="btn btn-request" onClick={(e) => e.stopPropagation()}>
               {t('offersCard.onRequest')}
             </button>
           </div>
@@ -197,6 +220,22 @@ export default function OffersList({ onCardHover }) {
         className="offer-card card border-0 shadow-sm mb-3"
         onMouseEnter={() => onCardHover && onCardHover(2)}
         onMouseLeave={() => onCardHover && onCardHover(null)}
+        onClick={() =>
+          navigate("/object/2", {
+            state: {
+              initialBooking: {
+                tariffId: "1m",
+                stayDays: 30,
+              },
+              objectData: {
+                min_stay: 30,
+                max_stay: 365,
+                available_from: "1 января 2026",
+              },
+            },
+          })
+        }
+        style={{ cursor: "pointer" }}
       >
         <div className="card-body p-3 d-flex gap-3">
           <div className="offer-card-photo position-relative flex-shrink-0">
@@ -223,16 +262,21 @@ export default function OffersList({ onCardHover }) {
                   data-bs-target="#offerCarousel2"
                   data-bs-slide-to="0"
                   className="active"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
+
                 <button
                   type="button"
                   data-bs-target="#offerCarousel2"
                   data-bs-slide-to="1"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
+
                 <button
                   type="button"
                   data-bs-target="#offerCarousel2"
                   data-bs-slide-to="2"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
               </div>
 
@@ -241,6 +285,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel2"
                 data-bs-slide="prev"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-left"></i>
               </button>
@@ -249,6 +294,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel2"
                 data-bs-slide="next"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-right"></i>
               </button>
@@ -258,6 +304,7 @@ export default function OffersList({ onCardHover }) {
               className="offer-fav-btn"
               type="button"
               aria-label={t('header.favAria')}
+              onClick={(e) => e.stopPropagation()}
             >
               <i className="bi bi-heart"></i>
             </button>
@@ -351,7 +398,7 @@ export default function OffersList({ onCardHover }) {
               </div>
             </div>
 
-            <button type="button" className="btn btn-request">
+            <button type="button" className="btn btn-request" onClick={(e) => e.stopPropagation()}>
               {t('offersCard.onRequest')}
             </button>
           </div>
@@ -363,6 +410,22 @@ export default function OffersList({ onCardHover }) {
         className="offer-card card border-0 shadow-sm mb-3"
         onMouseEnter={() => onCardHover && onCardHover(3)}
         onMouseLeave={() => onCardHover && onCardHover(null)}
+        onClick={() =>
+          navigate("/object/3", {
+            state: {
+              initialBooking: {
+                tariffId: "6m_plus",
+                stayDays: 180,
+              },
+              objectData: {
+                min_stay: 60,
+                max_stay: 365,
+                available_from: "1 января 2026",
+              },
+            },
+          })
+        }
+        style={{ cursor: "pointer" }}
       >
         <div className="card-body p-3 d-flex gap-3">
           <div className="offer-card-photo position-relative flex-shrink-0">
@@ -389,16 +452,21 @@ export default function OffersList({ onCardHover }) {
                   data-bs-target="#offerCarousel3"
                   data-bs-slide-to="0"
                   className="active"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
+
                 <button
                   type="button"
                   data-bs-target="#offerCarousel3"
                   data-bs-slide-to="1"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
+
                 <button
                   type="button"
                   data-bs-target="#offerCarousel3"
                   data-bs-slide-to="2"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
               </div>
 
@@ -407,6 +475,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel3"
                 data-bs-slide="prev"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-left"></i>
               </button>
@@ -415,6 +484,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel3"
                 data-bs-slide="next"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-right"></i>
               </button>
@@ -424,6 +494,7 @@ export default function OffersList({ onCardHover }) {
               className="offer-fav-btn"
               type="button"
               aria-label={t('header.favAria')}
+              onClick={(e) => e.stopPropagation()}
             >
               <i className="bi bi-heart"></i>
             </button>
@@ -530,7 +601,7 @@ export default function OffersList({ onCardHover }) {
               </div>
             </div>
 
-            <button type="button" className="btn btn-request">
+            <button type="button" className="btn btn-request" onClick={(e) => e.stopPropagation()}>
               {t('offersCard.onRequest')}
             </button>
           </div>
@@ -542,6 +613,22 @@ export default function OffersList({ onCardHover }) {
         className="offer-card card border-0 shadow-sm mb-3"
         onMouseEnter={() => onCardHover && onCardHover(4)}
         onMouseLeave={() => onCardHover && onCardHover(null)}
+        onClick={() =>
+          navigate("/object/4", {
+            state: {
+              initialBooking: {
+                tariffId: "1m",
+                stayDays: 30,
+              },
+              objectData: {
+                min_stay: 30,
+                max_stay: 365,
+                available_from: "1 января 2026",
+              },
+            },
+          })
+        }
+        style={{ cursor: "pointer" }}
       >
         <div className="card-body p-3 d-flex gap-3">
           <div className="offer-card-photo position-relative flex-shrink-0">
@@ -568,16 +655,19 @@ export default function OffersList({ onCardHover }) {
                   data-bs-target="#offerCarousel4"
                   data-bs-slide-to="0"
                   className="active"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
                 <button
                   type="button"
                   data-bs-target="#offerCarousel4"
                   data-bs-slide-to="1"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
                 <button
                   type="button"
                   data-bs-target="#offerCarousel4"
                   data-bs-slide-to="2"
+                  onClick={(e) => e.stopPropagation()}
                 ></button>
               </div>
 
@@ -586,6 +676,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel4"
                 data-bs-slide="prev"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-left"></i>
               </button>
@@ -594,6 +685,7 @@ export default function OffersList({ onCardHover }) {
                 type="button"
                 data-bs-target="#offerCarousel4"
                 data-bs-slide="next"
+                onClick={(e) => e.stopPropagation()}
               >
                 <i className="bi bi-chevron-right"></i>
               </button>
@@ -603,6 +695,7 @@ export default function OffersList({ onCardHover }) {
               className="offer-fav-btn"
               type="button"
               aria-label={t('header.favAria')}
+              onClick={(e) => e.stopPropagation()}
             >
               <i className="bi bi-heart"></i>
             </button>
@@ -696,7 +789,7 @@ export default function OffersList({ onCardHover }) {
               </div>
             </div>
 
-            <button type="button" className="btn btn-request">
+            <button type="button" className="btn btn-request" onClick={(e) => e.stopPropagation()}>
               {t('offersCard.onRequest')}
             </button>
           </div>

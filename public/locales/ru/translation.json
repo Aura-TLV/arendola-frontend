@@ -1,7 +1,7 @@
 {
   "auth": {
     "login": {
-      "title": "Войти",
+      "title": "Вход",
       "email": "E-mail",
       "password": "Пароль",
       "remember": "Запомнить меня (30 дней)",
@@ -19,7 +19,7 @@
       "agree": "Я соглашаюсь с",
       "terms": "Пользовательским соглашением",
       "privacy": "Политикой обработки данных",
-      "submit": "Зарегистрироваться",
+      "submit": "Регистрация",
       "haveAccount": "Уже есть аккаунт?",
       "login": "Войти"
     },
@@ -66,10 +66,11 @@
     "rentOut": "Сдать жильё",
 
     "searchAria": "Поиск",
-    "favAria": "Мой выбор",
+    "favAria": "Избранное",
     "notificationsAria": "Уведомления",
     "profileAria": "Профиль",
     "helpAria": "Помощь",
+    "feedbackAria": "Обратная связь",
     "messagesAria": "Сообщения"
   },
 
