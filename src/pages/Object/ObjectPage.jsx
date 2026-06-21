@@ -38,10 +38,15 @@ const formatStay = (days) => {
 
 const addDays = (dateString, days) => {
   if (!dateString) return null;
-  const next = new Date(dateString);
+
+  const [year, month, day] = dateString.split("-").map(Number);
+  const next = new Date(year, month - 1, day);
+
   if (Number.isNaN(next.getTime())) return null;
+
   next.setDate(next.getDate() + days);
-  return next.toISOString().slice(0, 10);
+
+  return toIsoDate(next);
 };
 
 const diffDays = (checkIn, checkOut) => {
@@ -50,6 +55,74 @@ const diffDays = (checkIn, checkOut) => {
   const to = new Date(checkOut);
   if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) return null;
   return Math.max(Math.round((to - from) / DAY_MS), 0);
+};
+
+const parseRuDateToIso = (value) => {
+  if (!value) return null;
+
+  const monthMap = {
+    января: 0,
+    февраля: 1,
+    марта: 2,
+    апреля: 3,
+    мая: 4,
+    июня: 5,
+    июля: 6,
+    августа: 7,
+    сентября: 8,
+    октября: 9,
+    ноября: 10,
+    декабря: 11,
+  };
+
+  const parts = value.trim().split(" ");
+  const day = Number(parts[0]);
+  const month = monthMap[parts[1]];
+  const year = Number(parts[2]);
+
+  if (!day || month == null || !year) return null;
+
+  return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+};
+
+const toIsoDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const getMonthStart = (isoDate) => {
+  const date = new Date(isoDate);
+  return new Date(date.getFullYear(), date.getMonth(), 1);
+};
+
+const addMonths = (date, months) => {
+  return new Date(date.getFullYear(), date.getMonth() + months, 1);
+};
+
+const getDaysInMonth = (year, month) => {
+  return new Date(year, month + 1, 0).getDate();
+};
+
+const formatCalendarMonthTitle = (date) => {
+  const months = [
+    "Январь",
+    "Февраль",
+    "Март",
+    "Апрель",
+    "Май",
+    "Июнь",
+    "Июль",
+    "Август",
+    "Сентябрь",
+    "Октябрь",
+    "Ноябрь",
+    "Декабрь",
+  ];
+
+  return `${months[date.getMonth()]} ${date.getFullYear()} г.`;
 };
 
 const formatMonthInputLabel = (value) => {
@@ -76,29 +149,40 @@ const formatMonthInputLabel = (value) => {
   return `${monthNames[monthIndex]} ${year}`;
 };
 
-const formatDisplayDate = (dateString) => {
+const formatDisplayDate = (dateString, withYear = true) => {
   if (!dateString) return "";
 
   const date = new Date(dateString);
   if (Number.isNaN(date.getTime())) return dateString;
 
   const months = [
-    "янв",
-    "фев",
-    "мар",
-    "апр",
-    "мая",
-    "июн",
-    "июл",
-    "авг",
-    "сен",
-    "окт",
-    "ноя",
-    "дек",
+    "янв", "фев", "мар", "апр", "мая", "июн",
+    "июл", "авг", "сент", "окт", "ноя", "дек",
   ];
 
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${day} ${months[date.getMonth()]} ${date.getFullYear()}`;
+  const day = date.getDate();
+  const base = `${day} ${months[date.getMonth()]}`;
+
+  return withYear ? `${base} ${date.getFullYear()}` : base;
+};
+
+const formatDateRange = (checkIn, checkOut) => {
+  if (!checkIn || !checkOut) return "";
+
+  const from = new Date(checkIn);
+  const to = new Date(checkOut);
+
+  if (Number.isNaN(from.getTime()) || Number.isNaN(to.getTime())) {
+    return `${checkIn} → ${checkOut}`;
+  }
+
+  const sameYear = from.getFullYear() === to.getFullYear();
+
+  if (sameYear) {
+    return `${formatDisplayDate(checkIn, false)} → ${formatDisplayDate(checkOut, true)}`;
+  }
+
+  return `${formatDisplayDate(checkIn, true)} → ${formatDisplayDate(checkOut, true)}`;
 };
 
 const formatArrivalMonthsLine = (months) => {
@@ -181,6 +265,18 @@ const buildStayCardViewModel = ({
   const hasMonths = bookingState.arrivalMonths.length > 0;
   const hasStay = derivedStayDays != null;
 
+  const needsCorrection = Boolean(bookingState.invalidStateMessage);
+
+  if (needsCorrection) {
+    return {
+      stayLine: "Даты требуют уточнения",
+      dateLine: "Укажите даты",
+      guestsLine: "",
+      actionLabel: "Изменить даты",
+      showAvailableFrom: false,
+    };
+  }
+
   const adults = bookingState.adults ?? bookingState.guests ?? 1;
 const children = bookingState.children ?? 0;
 const totalGuests = adults + children;
@@ -203,9 +299,7 @@ const guestsLine = `${totalGuests} ${pluralize(
   if (hasExactDates) {
     return {
       stayLine: formatStay(derivedStayDays),
-      dateLine: `${formatDisplayDate(bookingState.checkIn)} → ${formatDisplayDate(
-        bookingState.checkOut
-      )}`,
+      dateLine: formatDateRange(bookingState.checkIn, bookingState.checkOut),
       guestsLine,
       actionLabel,
       showAvailableFrom,
@@ -446,6 +540,163 @@ const guestRules = {
 
 const [showGuestsPopover, setShowGuestsPopover] = useState(false);
 
+const [showCalendarModal, setShowCalendarModal] = useState(false);
+
+const [draftDateEditMode, setDraftDateEditMode] = useState(null); // null | "checkIn" | "checkOut"
+
+const availableFromIso =
+  parseRuDateToIso(availableFromLabel) || "2026-01-01";
+  
+
+const [calendarMonthDate, setCalendarMonthDate] = useState(
+  getMonthStart(availableFromIso)
+);
+
+
+const maxStayDays = objectData?.max_stay ?? 365;
+
+const CORRECTION_MESSAGE = "Даты требуют уточнения";
+const CORRECTION_MESSAGE_MOBILE = "Уточните параметры проживания";
+
+const availableFromMonthStart = getMonthStart(availableFromIso);
+
+const isPrevCalendarDisabled =
+  calendarMonthDate.getTime() <= availableFromMonthStart.getTime();
+
+const handleDraftDateClick = (dateIso) => {
+  setDraftBookingState((prev) => {
+    const { checkIn, checkOut } = prev;
+
+    if (draftDateEditMode === "checkIn") {
+      setDraftDateEditMode(null);
+
+      return {
+        ...prev,
+        checkIn: dateIso,
+        checkOut: null,
+        stayDays: minStayDays,
+        arrivalMonths: [],
+        invalidStateMessage: "",
+      };
+    }
+
+    if (draftDateEditMode === "checkOut" && checkIn) {
+      const minCheckout = addDays(checkIn, minStayDays);
+      const maxCheckout = addDays(checkIn, maxStayDays);
+
+      if (dateIso <= checkIn || dateIso < minCheckout || dateIso > maxCheckout) {
+        return prev;
+      }
+
+      setDraftDateEditMode(null);
+
+      return {
+        ...prev,
+        checkOut: dateIso,
+        stayDays: diffDays(checkIn, dateIso),
+        arrivalMonths: [],
+        invalidStateMessage: "",
+      };
+    }
+
+    if (!checkIn) {
+      return {
+        ...prev,
+        checkIn: dateIso,
+        checkOut: null,
+        stayDays: minStayDays,
+        arrivalMonths: [],
+        invalidStateMessage: "",
+      };
+    }
+
+    if (checkIn && checkOut && !draftDateEditMode) {
+      if (dateIso > checkOut) {
+        return {
+          ...prev,
+          checkOut: dateIso,
+          stayDays: diffDays(checkIn, dateIso),
+          arrivalMonths: [],
+          invalidStateMessage: "",
+        };
+      }
+
+      return prev;
+    }
+
+    if (checkIn && checkOut) {
+      if (dateIso > checkOut) {
+        return {
+          ...prev,
+          checkOut: dateIso,
+          stayDays: diffDays(checkIn, dateIso),
+          arrivalMonths: [],
+          invalidStateMessage: "",
+        };
+      }
+
+      if (dateIso < checkIn) {
+        return {
+          ...prev,
+          checkIn: dateIso,
+          checkOut: null,
+          stayDays: minStayDays,
+          arrivalMonths: [],
+          invalidStateMessage: "",
+        };
+      }
+
+      return {
+        ...prev,
+        checkIn: dateIso,
+        checkOut: null,
+        stayDays: minStayDays,
+        arrivalMonths: [],
+        invalidStateMessage: "",
+      };
+    }
+
+    if (dateIso < checkIn) {
+      return {
+        ...prev,
+        checkIn: dateIso,
+        checkOut: null,
+        stayDays: minStayDays,
+        arrivalMonths: [],
+        invalidStateMessage: "",
+      };
+    }
+
+    return {
+      ...prev,
+      checkOut: dateIso,
+      stayDays: diffDays(checkIn, dateIso),
+      arrivalMonths: [],
+      invalidStateMessage: "",
+    };
+  });
+};
+
+const resetDraftDates = () => {
+  setDraftDateEditMode(null);
+
+  // По ТЗ 4.4.1: если срок был только из точных дат — сбрасываем до min
+  // если срок выбирался отдельно (plashka) — сохраняем
+  const stayWasFromDatesOnly =
+    bookingState.checkIn &&
+    bookingState.checkOut &&
+    !bookingState.stayDays;
+
+  setDraftBookingState((prev) => ({
+    ...prev,
+    checkIn: null,
+    checkOut: null,
+    arrivalMonths: [],
+    invalidStateMessage: "",
+    stayDays: stayWasFromDatesOnly ? minStayDays : (bookingState.stayDays ?? minStayDays),
+  }));
+};
+
 const [draftGuests, setDraftGuests] = useState(() => ({
   adults: bookingState.adults ?? 1,
   children: bookingState.children ?? 0,
@@ -456,6 +707,10 @@ const [draftGuests, setDraftGuests] = useState(() => ({
 }));
 
 const draftTotalGuests = draftGuests.adults + draftGuests.children;
+
+const hasInvalidChildAge =
+  draftGuests.children > 0 &&
+  draftGuests.childAges.some((age) => Number(age) < guestRules.minChildAge);
 
 const openGuestsPopover = () => {
   setDraftGuests({
@@ -471,6 +726,9 @@ const openGuestsPopover = () => {
 };
 
 const applyGuestsPopover = () => {
+    if (hasInvalidChildAge) {
+      return;
+    }
   if (draftGuests.pets && !draftGuests.petDescription.trim()) {
     setDraftGuests((prev) => ({
       ...prev,
@@ -508,6 +766,23 @@ const stayCardView = buildStayCardViewModel({
   formatStay,
 });
 
+const openCalendarModal = () => {
+  setDraftBookingState({
+    ...bookingState,
+    arrivalMonths: [...bookingState.arrivalMonths],
+  });
+
+  setCalendarMonthDate(
+  getMonthStart(bookingState.checkIn || availableFromIso)
+  );
+  setDraftDateEditMode(null);
+  setShowCalendarModal(true);
+};
+
+const closeCalendarModal = () => {
+  setShowCalendarModal(false);
+};
+
 const openStayParamsFullscreen = () => {
   setDraftBookingState({
     ...bookingState,
@@ -523,7 +798,11 @@ const openStayParamsFullscreen = () => {
     petError: "",
   });
 
+  setCalendarMonthDate(
+  getMonthStart(bookingState.checkIn || availableFromIso)
+  );
   setMobileStayStep("calendar");
+  setDraftDateEditMode(null);
   setShowStayParamsFullscreen(true);
 };
 
@@ -532,11 +811,15 @@ const openStayParamsFullscreen = () => {
   };
 
   const applyStayParamsFullscreen = () => {
+      if (hasInvalidChildAge) {
+        return;
+      }
     const totalGuests = draftGuests.adults + draftGuests.children;
 
     setBookingState({
       ...draftBookingState,
       arrivalMonths: [...draftBookingState.arrivalMonths],
+      invalidStateMessage: "",
       adults: draftGuests.adults,
       children: draftGuests.children,
       childAges: draftGuests.childAges,
@@ -575,9 +858,11 @@ const openStayParamsFullscreen = () => {
     () =>
       baseTariffs.map((tariff) => ({
         ...tariff,
-        disabled: minStayDays >= 60 && tariff.id === "1m",
+        disabled:
+          tariff.minDays < minStayDays ||
+          tariff.minDays > maxStayDays,
       })),
-    [baseTariffs, minStayDays]
+    [baseTariffs, minStayDays, maxStayDays]
   );
 
   const amenitiesSections = [
@@ -631,6 +916,51 @@ const openStayParamsFullscreen = () => {
   
 
   const activeTariff = getTariffForDays(tariffs, derivedStayDays);
+
+    const nextTariffHint = (() => {
+    if (!derivedStayDays) return null;
+
+    const nextTariff = tariffs.find(
+      (tariff) =>
+        !tariff.disabled &&
+        tariff.minDays > derivedStayDays &&
+        tariff.minDays - derivedStayDays <= 7 &&
+        tariff.minDays <= (objectData?.max_stay ?? 365)
+    );
+
+    if (!nextTariff) return null;
+
+    return {
+      daysToAdd: nextTariff.minDays - derivedStayDays,
+      label: nextTariff.label,
+      monthPrice: nextTariff.monthPrice,
+    };
+  })();
+
+  const draftDerivedStayDays =
+    draftBookingState.checkIn && draftBookingState.checkOut
+      ? diffDays(draftBookingState.checkIn, draftBookingState.checkOut)
+      : draftBookingState.stayDays;
+
+  const draftNextTariffHint = (() => {
+    if (!draftDerivedStayDays) return null;
+
+    const nextTariff = tariffs.find(
+      (tariff) =>
+        !tariff.disabled &&
+        tariff.minDays > draftDerivedStayDays &&
+        tariff.minDays - draftDerivedStayDays <= 7 &&
+        tariff.minDays <= maxStayDays
+    );
+
+    if (!nextTariff) return null;
+
+    return {
+      daysToAdd: nextTariff.minDays - draftDerivedStayDays,
+      monthPrice: nextTariff.monthPrice,
+    };
+  })();
+
   const stickyMonthPrice = activeTariff.monthPrice;
   const firstMonthRent = activeTariff.monthPrice;
   const serviceFee = Math.round(firstMonthRent * 0.1);
@@ -660,31 +990,70 @@ const openStayParamsFullscreen = () => {
   const handleTariffClick = (tariff) => {
     if (tariff.disabled) return;
 
+    const nextStayDays = tariff.minDays;
+    const currentDays = derivedStayDays ?? bookingState.stayDays ?? minStayDays;
+
     const inRange =
-      derivedStayDays >= tariff.minDays &&
-      (tariff.maxDays === null || derivedStayDays <= tariff.maxDays);
+      currentDays >= tariff.minDays &&
+      (tariff.maxDays === null || currentDays <= tariff.maxDays);
 
     if (inRange) return;
 
-    const nextStayDays = tariff.minDays;
+    setBookingState((prev) => {
+      const nextState = {
+        ...prev,
+        stayDays: nextStayDays,
+        invalidStateMessage: "",
+      };
 
-    setBookingState((prev) => ({
-      ...prev,
-      stayDays: nextStayDays,
-      invalidStateMessage: "",
-      checkOut: prev.checkIn ? addDays(prev.checkIn, nextStayDays) : prev.checkOut,
-    }));
+      if (!prev.checkIn) {
+        return {
+          ...nextState,
+          checkOut: null,
+        };
+      }
+
+      const nextCheckOut = addDays(prev.checkIn, nextStayDays);
+
+      if (!nextCheckOut) {
+        return {
+          ...nextState,
+          checkOut: null,
+          invalidStateMessage: CORRECTION_MESSAGE,
+        };
+      }
+
+      const maxAllowedCheckout = addDays(prev.checkIn, maxStayDays);
+
+      if (maxAllowedCheckout && nextCheckOut > maxAllowedCheckout) {
+        return {
+          ...nextState,
+          checkOut: null,
+          arrivalMonths: [],
+          invalidStateMessage: CORRECTION_MESSAGE,
+        };
+      }
+
+      return {
+        ...nextState,
+        checkOut: nextCheckOut,
+        arrivalMonths: [],
+      };
+    });
   };
 
-
   const stickyCtaLabel = bookingType === "request" ? "Отправить запрос" : "Забронировать";
-  const paymentStatusText =
-    bookingType === "request"
-      ? "Оплата производится после подтверждения хозяином."
-      : "Оплата производится на следующем шаге.";
-
 
   const hasExactDates = Boolean(bookingState.checkIn && bookingState.checkOut);
+
+  const paymentStatusText = !hasExactDates
+    ? "Укажите даты проживания."
+    : bookingType === "request"
+    ? "Оплата после подтверждения хозяином."
+    : "Оплата на следующем шаге.";
+
+
+  
   const hasArrivalMonths = bookingState.arrivalMonths.length > 0;
   
 
@@ -698,7 +1067,7 @@ const openStayParamsFullscreen = () => {
     : `Ваш срок: ${formatStay(derivedStayDays)}`;
 
   const bottomSheetSecondaryLine = hasExactDates
-    ? `${bookingState.checkIn} - ${bookingState.checkOut}`
+    ? formatDateRange(bookingState.checkIn, bookingState.checkOut)
     : hasArrivalMonths
     ? `Заезд: ${bookingState.arrivalMonths.join(", ")}`
     : stayCardView.dateLine;
@@ -908,6 +1277,12 @@ const openStayParamsFullscreen = () => {
                 {stayCardView.showAvailableFrom && (
                   <div className="small text-muted mt-2 px-1">
                     Доступно с {availableFromLabel}
+                  </div>
+                )}
+
+                {bookingState.invalidStateMessage && (
+                  <div className="object-booking-warning mt-2">
+                    {CORRECTION_MESSAGE_MOBILE}
                   </div>
                 )}
 
@@ -1251,7 +1626,7 @@ const openStayParamsFullscreen = () => {
                     <button
                       type="button"
                       className="object-stay-date object-stay-inner-button"
-                      onClick={openStayParamsFullscreen}
+                      onClick={openCalendarModal}
                     >
                       {stayCardView.dateLine}
                     </button>
@@ -1261,7 +1636,7 @@ const openStayParamsFullscreen = () => {
                     <button
                       type="button"
                       className="object-stay-action object-stay-inner-button"
-                      onClick={openStayParamsFullscreen}
+                       onClick={openCalendarModal}
                     >
                       {stayCardView.actionLabel} <i className="bi bi-chevron-right"></i>
                     </button>
@@ -1283,184 +1658,17 @@ const openStayParamsFullscreen = () => {
                   </div>
                 )}
 
+                {bookingState.invalidStateMessage && (
+                  <div className="object-booking-warning mb-3">
+                    {bookingState.invalidStateMessage}
+                  </div>
+                )}
+
 
 
                 
 
-                {showGuestsPopover && (
-                  <div className="object-guests-popover">
-                    <div className="object-guests-popover-title">Гости и питомцы</div>
-                    <div className="object-guests-popover-limit">
-                      Жильё рассчитано максимум на {guestRules.maxGuests} гостей
-                    </div>
-
-                    <div className="object-guests-control-row">
-                      <div>
-                        <div className="object-guests-control-title">Взрослые</div>
-                        <div className="object-guests-control-subtitle">от 18 лет</div>
-                      </div>
-
-                      <div className="object-counter">
-                        <button
-                          type="button"
-                          disabled={draftGuests.adults <= 1}
-                          onClick={() =>
-                            setDraftGuests((prev) => ({
-                              ...prev,
-                              adults: Math.max(1, prev.adults - 1),
-                            }))
-                          }
-                        >
-                          −
-                        </button>
-                        <span>{draftGuests.adults}</span>
-                        <button
-                          type="button"
-                          disabled={draftTotalGuests >= guestRules.maxGuests}
-                          onClick={() =>
-                            setDraftGuests((prev) => ({
-                              ...prev,
-                              adults: prev.adults + 1,
-                            }))
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="object-guests-control-row">
-                      <div>
-                        <div className="object-guests-control-title">Дети</div>
-                        <div className="object-guests-control-subtitle">
-                          {guestRules.childrenAllowed ? "от 0 до 17 лет" : "Нельзя с детьми"}
-                        </div>
-                      </div>
-
-                      <div className="object-counter">
-                        <button
-                          type="button"
-                          disabled={draftGuests.children <= 0}
-                          onClick={() =>
-                            setDraftGuests((prev) => ({
-                              ...prev,
-                              children: Math.max(0, prev.children - 1),
-                              childAges: prev.childAges.slice(0, -1),
-                            }))
-                          }
-                        >
-                          −
-                        </button>
-                        <span>{draftGuests.children}</span>
-                        <button
-                          type="button"
-                          disabled={
-                            !guestRules.childrenAllowed ||
-                            draftTotalGuests >= guestRules.maxGuests
-                          }
-                          onClick={() =>
-                            setDraftGuests((prev) => ({
-                              ...prev,
-                              children: prev.children + 1,
-                              childAges: [...prev.childAges, guestRules.minChildAge],
-                            }))
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-
-                    {draftGuests.children > 0 && (
-                      <div className="object-child-ages">
-                        {draftGuests.childAges.map((age, index) => (
-                          <label key={index} className="object-child-age-row">
-                            <span>Возраст ребёнка {index + 1}</span>
-                            <select
-                              value={age}
-                              onChange={(e) => {
-                                const nextAges = [...draftGuests.childAges];
-                                nextAges[index] = Number(e.target.value);
-                                setDraftGuests((prev) => ({
-                                  ...prev,
-                                  childAges: nextAges,
-                                }));
-                              }}
-                            >
-                              {Array.from(
-                                { length: 18 - guestRules.minChildAge },
-                                (_, i) => guestRules.minChildAge + i
-                              ).map((value) => (
-                                <option key={value} value={value}>
-                                  {value === 0 ? "до года" : `${value} лет`}
-                                </option>
-                              ))}
-                            </select>
-                          </label>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="object-pets-block">
-                      <div className="object-pets-row">
-                        <div>
-                          <div className="object-guests-control-title">Питомцы</div>
-                          <div className="object-guests-control-subtitle">
-                            {guestRules.petsAllowed ? "Укажите какие" : "Нельзя с питомцами"}
-                          </div>
-                        </div>
-
-                        <label className="object-switch">
-                          <input
-                            type="checkbox"
-                            checked={draftGuests.pets}
-                            disabled={!guestRules.petsAllowed}
-                            onChange={(e) =>
-                              setDraftGuests((prev) => ({
-                                ...prev,
-                                pets: e.target.checked,
-                                petError: "",
-                              }))
-                            }
-                          />
-                          <span></span>
-                        </label>
-                      </div>
-
-                      {draftGuests.pets && guestRules.petsAllowed && (
-                        <>
-                          <textarea
-                            className="object-pet-textarea"
-                            placeholder="Опишите питомца (например: мопс, 7 кг)"
-                            value={draftGuests.petDescription}
-                            onChange={(e) =>
-                              setDraftGuests((prev) => ({
-                                ...prev,
-                                petDescription: e.target.value,
-                                petError: "",
-                              }))
-                            }
-                          />
-                          <div className="object-guests-control-subtitle mt-1">
-                            Хозяин рассмотрит запрос на проживание с питомцем
-                          </div>
-                        </>
-                      )}
-
-                      {draftGuests.petError && (
-                        <div className="object-guests-error">{draftGuests.petError}</div>
-                      )}
-                    </div>
-
-                    <button
-                      type="button"
-                      className="btn btn-success w-100 mt-3"
-                      onClick={applyGuestsPopover}
-                    >
-                      Готово
-                    </button>
-                  </div>
-                )}
+                
 
                 <div className="d-flex gap-2 flex-nowrap mb-3">
                   {tariffs.map((tariff) => {
@@ -1493,14 +1701,30 @@ const openStayParamsFullscreen = () => {
                 </div>
 
                 <div className="object-desktop-summary mb-3">
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>Аренда за первый месяц</span>
-                    <span>{formatPrice(firstMonthRent)}</span>
+                  <div className="object-payment-row">
+                    <span className="object-payment-label">
+                      Аренда за первый месяц
+                      <span
+                        className="object-tooltip-icon"
+                        title="Для расчётов на платформе 1 месяц = 30 дней проживания."
+                      >
+                        ⓘ
+                      </span>
+                    </span>
+                    <span className="object-payment-value">{formatPrice(firstMonthRent)}</span>
                   </div>
 
-                  <div className="d-flex justify-content-between mb-2">
-                    <span>Разовый сервисный сбор</span>
-                    <span>{formatPrice(serviceFee)}</span>
+                  <div className="object-payment-row">
+                    <span className="object-payment-label">
+                      Разовый сервисный сбор
+                      <span
+                        className="object-tooltip-icon"
+                        title="Сервисный сбор взимается один раз при бронировании вместе с оплатой первого месяца."
+                      >
+                        ⓘ
+                      </span>
+                    </span>
+                    <span className="object-payment-value">{formatPrice(serviceFee)}</span>
                   </div>
 
                   <div className="object-desktop-total-row d-flex justify-content-between fw-semibold border-top">
@@ -1522,7 +1746,14 @@ const openStayParamsFullscreen = () => {
                 <button
                   className="btn btn-success w-100 mb-2"
                   type="button"
-                  onClick={() => alert("Переход в Checkout")}
+                  onClick={() => {
+                    if (bookingState.checkIn && bookingState.checkOut) {
+                      alert("Переход в Checkout");
+                      return;
+                    }
+
+                    openCalendarModal();
+                  }}
                 >
                   {stickyCtaLabel}
                 </button>
@@ -1563,7 +1794,20 @@ const openStayParamsFullscreen = () => {
               <div className="fw-semibold text-dark">{formatPrice(stickyMonthPrice)} / мес</div>
               <div className="small text-muted">Детали оплаты <i className="bi bi-chevron-right"></i></div>
             </button>
-            <button type="button" className="btn btn-success flex-shrink-0" onClick={() => alert("Переход в Checkout")}>{stickyCtaLabel}</button>
+            <button
+              type="button"
+              className="btn btn-success flex-shrink-0"
+              onClick={() => {
+                if (bookingState.checkIn && bookingState.checkOut) {
+                  alert("Переход в Checkout");
+                  return;
+                }
+
+                openStayParamsFullscreen();
+              }}
+            >
+              {stickyCtaLabel}
+            </button>
           </div>
         </div>
       </div>
@@ -1578,7 +1822,14 @@ const openStayParamsFullscreen = () => {
           <div className="mb-4">
             <div className="small text-muted mb-1">
               Тариф по сроку · {activeTariff.label}
-              {activeTariff.discounted && " ⓘ"}
+              {activeTariff.discounted && (
+                  <span
+                    className="object-tooltip-icon"
+                    title="Сниженная ставка действует для согласованного срока проживания. Если фактический срок окажется меньше, хозяин может пересчитать стоимость по другому тарифу."
+                  >
+                    {" "}ⓘ
+                  </span>
+                )}
             </div>
             <div className="fw-semibold">{formatPrice(activeTariff.monthPrice)} / мес</div>
           </div>
@@ -1586,13 +1837,6 @@ const openStayParamsFullscreen = () => {
           <div className="mb-4">
             <div className="d-flex align-items-center justify-content-between mb-1">
               <div className="fw-semibold">Срок проживания</div>
-              <button
-                type="button"
-                className="btn btn-link p-0 text-decoration-none"
-                onClick={openStayParamsFullscreen}
-              >
-                {bottomSheetStayActionLabel}
-              </button>
             </div>
 
             <div>{bottomSheetPrimaryLine}</div>
@@ -1603,7 +1847,9 @@ const openStayParamsFullscreen = () => {
             )}
 
             {bookingState.invalidStateMessage && (
-              <div className="small text-danger mt-2">{bookingState.invalidStateMessage}</div>
+              <div className="small text-danger mt-2">
+                {bookingState.invalidStateMessage}
+              </div>
             )}
           </div>
 
@@ -1611,12 +1857,28 @@ const openStayParamsFullscreen = () => {
             <div className="fw-semibold mb-2">К оплате через Arendola</div>
 
             <div className="d-flex justify-content-between mb-2">
-              <span>{arendolaRentLabel}</span>
+              <span>
+              {arendolaRentLabel}{" "}
+              <span
+                className="object-tooltip-icon"
+                title="В Arendola расчётный месяц аренды составляет 30 дней проживания."
+              >
+                ⓘ
+              </span>
+            </span>
               <span>{formatPrice(firstMonthRent)}</span>
             </div>
 
             <div className="d-flex justify-content-between mb-2">
-              <span>Разовый сервисный сбор</span>
+              <span>
+                Разовый сервисный сбор{" "}
+                <span
+                  className="object-tooltip-icon"
+                  title="Сервисный сбор взимается один раз при бронировании вместе с оплатой первого расчётного месяца."
+                >
+                  ⓘ
+                </span>
+              </span>
               <span>{formatPrice(serviceFee)}</span>
             </div>
           </div>
@@ -1626,12 +1888,16 @@ const openStayParamsFullscreen = () => {
             <div className="small text-muted mt-2">{paymentStatusText}</div>
           </div>
 
-          <div className="border rounded p-3 mb-4">
+          <div className="border rounded p-3 mb-4" style={{ background: "#f0fdf4", borderColor: "#bbf7d0" }}>
             <div className="d-flex align-items-start gap-2">
               <i className="bi bi-shield-check"></i>
               <div>
                 <div className="small">Оплата за первый месяц хранится на платформе Arendola до заселения</div>
-                <button onClick={() => setShowCharacteristics(true)} type="button" className="btn btn-link p-0 text-decoration-none small">
+                <button
+                  type="button"
+                  className="btn btn-link p-0 text-decoration-none small"
+                  onClick={() => setShowPaymentProtectionSheet(true)}
+                >
                   Подробнее <i className="bi bi-chevron-right"></i>
                 </button>
               </div>
@@ -1641,7 +1907,7 @@ const openStayParamsFullscreen = () => {
           {hasHostPayments && (
             <div className="mb-4">
               <div className="fw-semibold mb-1">Платежи хозяину</div>
-              <div className="small text-muted mb-2">Оплачиваются напрямую хозяину и не списываются через Arendola</div>
+              <div className="small text-muted mb-2">Оплачиваются напрямую и не проходят через Arendola</div>
 
               {hostPayments.rentAfterFirstMonth > 0 && (
                 <div className="mb-3">
@@ -1654,12 +1920,30 @@ const openStayParamsFullscreen = () => {
               )}
 
               {hostPayments.extraDaysPrice > 0 && (
-                <div className="d-flex justify-content-between mb-2"><span>Дополнительные {extraDays} дн</span><span>{formatPrice(hostPayments.extraDaysPrice)}</span></div>
+                <div className="d-flex justify-content-between mb-2">
+                  <span>
+                    Дополнительные {extraDays} дн{" "}
+                    <span
+                      className="object-tooltip-icon"
+                      title="Дополнительные дни рассчитываются пропорционально месячному тарифу. 1 расчётный месяц = 30 дней проживания."
+                    >
+                      ⓘ
+                    </span>
+                  </span>
+                  <span>{formatPrice(hostPayments.extraDaysPrice)}</span></div>
               )}
 
               {hostPayments.deposit > 0 && (
                 <div className="d-flex justify-content-between mb-2">
-                  <span>Залог</span>
+                  <span>
+                    Залог{" "}
+                    <span
+                      className="object-tooltip-icon"
+                      title="Залог возвращается после выезда при отсутствии ущерба и задолженности."
+                    >
+                      ⓘ
+                    </span>
+                  </span>
                   <span>{formatPrice(hostPayments.deposit)} (при заезде)</span>
                 </div>
               )}
@@ -1700,7 +1984,7 @@ const openStayParamsFullscreen = () => {
               <div className="object-char-section">
                 <div className="object-char-section-title">Спальные места</div>
                 <div className="object-char-row"><span>Двуспальных кроватей</span><span>1</span></div>
-                <div className="object-char-row"><span>Односпальных кроватей</span><span>0</span></div>
+                
                 <div className="object-char-row"><span>Диванов-кроватей</span><span>1</span></div>
               </div>
 
@@ -1714,14 +1998,11 @@ const openStayParamsFullscreen = () => {
                 <div className="object-char-section-title">Санузлы</div>
                 <div className="object-char-row"><span>Всего санузлов</span><span>1</span></div>
                 <div className="object-char-row"><span>С ванной</span><span>1</span></div>
-                <div className="object-char-row"><span>С душевой</span><span>0</span></div>
-                <div className="object-char-row"><span>Отдельных туалетов</span><span>0</span></div>
               </div>
 
               <div className="object-char-section">
                 <div className="object-char-section-title">Балконы и лоджии</div>
                 <div className="object-char-row"><span>Балконов</span><span>1</span></div>
-                <div className="object-char-row"><span>Лоджий</span><span>0</span></div>
                 <div className="object-char-row"><span>Тип</span><span>застеклённый</span></div>
               </div>
 
@@ -2000,18 +2281,29 @@ const openStayParamsFullscreen = () => {
 
       {showStayParamsFullscreen && (
         <div className="object-fullscreen-backdrop">
-          <div className="object-fullscreen-sheet">
+          <div
+            className={`object-fullscreen-sheet ${
+              mobileStayStep === "guests" ? "object-fullscreen-sheet-guests" : ""
+            }`}
+          >
             <div className="object-fullscreen-header">
-              <button
-                type="button"
-                className="btn btn-link p-0 text-decoration-none"
-                onClick={closeStayParamsFullscreen}
-              >
-                Назад
-              </button>
+              {mobileStayStep === "guests" ? (
+                <button
+                  type="button"
+                  className="object-fullscreen-back-button"
+                  onClick={() => setMobileStayStep("calendar")}
+                  aria-label="Назад"
+                >
+                  ←
+                </button>
+              ) : (
+                <span className="object-fullscreen-header-spacer"></span>
+              )}
 
-              <div className="fw-semibold">
-                {mobileStayStep === "guests" ? "Гости и питомцы" : "Параметры проживания"}
+              <div className="object-fullscreen-header-title">
+                <div className="fw-semibold">
+                  {mobileStayStep === "guests" ? "" : "Параметры проживания"}
+                </div>
               </div>
 
               <button
@@ -2060,13 +2352,196 @@ const openStayParamsFullscreen = () => {
                   </div>
 
                   <div className="mb-4">
-                    <div className="fw-semibold mb-2">Даты / месяцы</div>
-                    <div className="small text-muted mb-2">
-                      Доступно с {availableFromLabel}
-                    </div>
+                    <div className="d-flex align-items-center justify-content-between mb-2">
+                      <div className="fw-semibold mb-0">Даты / месяцы</div>
 
-                    <div className="border rounded p-3 bg-light">
-                      Июль · август 2026
+                      <button
+                        type="button"
+                        className="object-calendar-reset-button"
+                        onClick={resetDraftDates}
+                      >
+                        Сброс
+                      </button>
+                    </div>
+                    
+
+                    <div className="object-mobile-calendar">
+                      <div className="object-mobile-calendar-summary">
+                        <div className="object-calendar-summary-top">
+                          <div className="object-mobile-calendar-summary-main">
+                            {draftBookingState.checkIn && draftBookingState.checkOut
+                              ? formatStay(diffDays(draftBookingState.checkIn, draftBookingState.checkOut))
+                              : draftBookingState.checkIn
+                              ? formatStay(draftBookingState.stayDays ?? minStayDays)
+                              : formatStay(draftBookingState.stayDays ?? minStayDays)}
+                          </div>
+                        </div>
+
+                        <div className="object-mobile-calendar-summary-sub">
+                          {draftBookingState.checkIn && draftBookingState.checkOut ? (
+                            <div className="object-calendar-summary-date-actions">
+                              <button
+                                type="button"
+                                onClick={() => setDraftDateEditMode("checkIn")}
+                                className={`object-calendar-summary-date-button ${
+                                  draftDateEditMode === "checkIn" ? "is-active" : ""
+                                }`}
+                              >
+                                Заезд: {formatDisplayDate(draftBookingState.checkIn)}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setDraftDateEditMode("checkOut")}
+                                className={`object-calendar-summary-date-button ${
+                                  draftDateEditMode === "checkOut" ? "is-active" : ""
+                                }`}
+                              >
+                                Выезд: {formatDisplayDate(draftBookingState.checkOut)}
+                              </button>
+                            </div>
+                          ) : draftBookingState.checkIn ? (
+                            <>
+                              Заезд: {formatDisplayDate(draftBookingState.checkIn)}
+                              <br />
+                              Выезд не раньше {formatDisplayDate(addDays(draftBookingState.checkIn, minStayDays))}
+                            </>
+                          ) : (
+                            "Укажите даты"
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="object-mobile-calendar-meta">
+                        Мин. срок - {minStayDays} дней · Макс. срок - {objectData?.max_stay ?? 365} дней
+                      </div>
+
+                      {draftNextTariffHint && (
+                        <div className="object-next-tariff-hint">
+                          ⓘ Добавьте ещё {draftNextTariffHint.daysToAdd}{" "}
+                          {pluralize(draftNextTariffHint.daysToAdd, "день", "дня", "дней")} — тариф станет{" "}
+                          {formatPrice(draftNextTariffHint.monthPrice)} / мес
+                        </div>
+                      )}
+
+                      <div className="object-mobile-calendar-month">
+                        <div className="object-calendar-month-header">
+                          <button
+                            type="button"
+                            className="object-calendar-nav"
+                            disabled={isPrevCalendarDisabled}
+                            onClick={() => setCalendarMonthDate((prev) => addMonths(prev, -1))}
+                          >
+                            ‹
+                          </button>
+
+                          <div className="object-calendar-month-title">
+                            {formatCalendarMonthTitle(calendarMonthDate)}
+                          </div>
+
+                          <button
+                            type="button"
+                            className="object-calendar-nav"
+                            onClick={() => setCalendarMonthDate((prev) => addMonths(prev, 1))}
+                          >
+                            ›
+                          </button>
+                        </div>
+
+                        <div className="object-calendar-weekdays">
+                          <span>Пн</span>
+                          <span>Вт</span>
+                          <span>Ср</span>
+                          <span>Чт</span>
+                          <span>Пт</span>
+                          <span>Сб</span>
+                          <span>Вс</span>
+                        </div>
+
+                        <div className="object-calendar-days">
+                          {(() => {
+                            const year = calendarMonthDate.getFullYear();
+                            const month = calendarMonthDate.getMonth();
+                            const daysInMonth = getDaysInMonth(year, month);
+                            const firstDay = new Date(year, month, 1);
+                            const startOffset = (firstDay.getDay() + 6) % 7;
+
+                            const cells = [
+                              ...Array.from({ length: startOffset }, () => null),
+                              ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+                            ];
+
+                            return cells.map((day, index) => {
+                              if (!day) {
+                                return <span key={`empty-mobile-${index}`} />;
+                              }
+
+                              const dateIso = toIsoDate(new Date(year, month, day));
+
+                              const minCheckout = draftBookingState.checkIn
+                                ? addDays(draftBookingState.checkIn, minStayDays)
+                                : null;
+
+                              const maxCheckout = draftBookingState.checkIn
+                                ? addDays(draftBookingState.checkIn, objectData?.max_stay ?? 365)
+                                : null;
+
+                              const isSelectedStart = draftBookingState.checkIn === dateIso;
+                              const isSelectedEnd = draftBookingState.checkOut === dateIso;
+
+                              const isInRange =
+                                draftBookingState.checkIn &&
+                                draftBookingState.checkOut &&
+                                dateIso > draftBookingState.checkIn &&
+                                dateIso < draftBookingState.checkOut;
+
+                              const isBeforeAvailable = dateIso < availableFromIso;
+
+                              const isEditingCheckout = draftDateEditMode === "checkOut";
+
+                              const isInvalidCheckout =
+                                draftBookingState.checkIn &&
+                                (!draftBookingState.checkOut || isEditingCheckout) &&
+                                dateIso > draftBookingState.checkIn &&
+                                (dateIso < minCheckout || dateIso > maxCheckout);
+
+                              const isAfterMaxCheckout =
+                                draftBookingState.checkIn && maxCheckout && dateIso > maxCheckout;
+
+                              const disabledTitle = isBeforeAvailable
+                                ? "Недоступно"
+                                : isAfterMaxCheckout
+                                ? `Максимальный срок — ${maxStayDays} дней`
+                                : isInvalidCheckout
+                                ? `Выезд не раньше ${formatDisplayDate(minCheckout)}`
+                                : "";
+
+                              const isDisabled = isBeforeAvailable || isInvalidCheckout || isAfterMaxCheckout;
+
+                              return (
+                                <button
+                                  key={dateIso}
+                                  type="button"
+                                  title={disabledTitle}
+                                  className={[
+                                    "object-calendar-day",
+                                    isSelectedStart ? "is-start" : "",
+                                    isSelectedEnd ? "is-end" : "",
+                                    isInRange ? "is-in-range" : "",
+                                    isDisabled ? "is-disabled" : "",
+                                  ]
+                                    .filter(Boolean)
+                                    .join(" ")}
+                                  disabled={isDisabled}
+                                  onClick={() => handleDraftDateClick(dateIso)}
+                                >
+                                  {day}
+                                </button>
+                              );
+                            });
+                          })()}
+                        </div>
+                      </div>
                     </div>
                   </div>
 
@@ -2098,7 +2573,22 @@ const openStayParamsFullscreen = () => {
                     <button
                       type="button"
                       className="btn btn-success w-100"
-                      onClick={applyStayParamsFullscreen}
+                      disabled={!draftBookingState.checkOut}
+                      onClick={() => {
+                        setBookingState((prev) => ({
+                          ...prev,
+                          checkIn: draftBookingState.checkIn,
+                          checkOut: draftBookingState.checkOut,
+                          stayDays: diffDays(
+                            draftBookingState.checkIn,
+                            draftBookingState.checkOut
+                          ),
+                          arrivalMonths: [],
+                          invalidStateMessage: "",
+                        }));
+
+                        setMobileStayStep("guests");
+                      }}
                     >
                       Применить
                     </button>
@@ -2108,20 +2598,13 @@ const openStayParamsFullscreen = () => {
 
               {mobileStayStep === "guests" && (
                 <>
-                  <div className="mb-3">
-                    <button
-                      type="button"
-                      className="btn btn-link p-0 text-decoration-none"
-                      onClick={() => setMobileStayStep("calendar")}
-                    >
-                      <i className="bi bi-chevron-left"></i> Назад к датам
-                    </button>
+                <div className="object-mobile-guests-heading">
+                  <div className="object-mobile-guests-heading-title">Гости</div>
+                  <div className="object-mobile-guests-heading-subtitle">
+                    Максимум {guestRules.maxGuests} гостя
                   </div>
-
-                  <div className="object-guests-popover-title">Гости и питомцы</div>
-                  <div className="object-guests-popover-limit mb-3">
-                    Жильё рассчитано максимум на {guestRules.maxGuests} гостей
-                  </div>
+                </div>
+                  
 
                   <div className="object-guests-control-row">
                     <div>
@@ -2227,6 +2710,12 @@ const openStayParamsFullscreen = () => {
                     </div>
                   )}
 
+                  {hasInvalidChildAge && (
+                    <div className="object-guests-warning">
+                      В этом жилье можно с детьми от {guestRules.minChildAge} лет
+                    </div>
+                  )}
+
                   <div className="object-pets-block">
                     <div className="object-pets-row">
                       <div>
@@ -2282,7 +2771,8 @@ const openStayParamsFullscreen = () => {
                     <button
                       type="button"
                       className="btn btn-success w-100"
-                      onClick={applyMobileGuestsScreen}
+                      disabled={hasInvalidChildAge}
+                      onClick={applyStayParamsFullscreen}
                     >
                       Готово
                     </button>
@@ -2457,6 +2947,449 @@ const openStayParamsFullscreen = () => {
                     </div>
                   ))}
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCalendarModal && (
+        <div className="object-fullscreen-backdrop">
+          <div className="object-fullscreen-sheet object-calendar-dialog">
+            <button
+              type="button"
+              className="btn-close object-calendar-close"
+              onClick={closeCalendarModal}
+            />
+
+            <div className="object-fullscreen-body">
+              <div className="object-calendar-modal-content">
+                <div className="d-flex align-items-center justify-content-between mb-2">
+                  <div className="fw-semibold mb-0">Даты</div>
+
+                  <button
+                    type="button"
+                    className="object-calendar-reset-button"
+                    onClick={resetDraftDates}
+                  >
+                    Сброс
+                  </button>
+                </div>
+                <div className="object-calendar-summary">
+                  <div className="object-calendar-summary-top">
+                    <div className="object-calendar-summary-main">
+                      {draftBookingState.checkIn && draftBookingState.checkOut
+                        ? formatStay(diffDays(draftBookingState.checkIn, draftBookingState.checkOut))
+                        : draftBookingState.checkIn
+                        ? formatStay(draftBookingState.stayDays ?? minStayDays)
+                        : formatStay(draftBookingState.stayDays ?? minStayDays)}
+                    </div>
+
+                    
+                  </div>
+
+                  <div className="object-calendar-summary-sub">
+                    {draftBookingState.checkIn && draftBookingState.checkOut ? (
+                      <div className="object-calendar-summary-date-actions">
+                        <button
+                          type="button"
+                          onClick={() => setDraftDateEditMode("checkIn")}
+                          className={`object-calendar-summary-date-button ${
+                            draftDateEditMode === "checkIn" ? "is-active" : ""
+                          }`}
+                        >
+                          Заезд: {formatDisplayDate(draftBookingState.checkIn)}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setDraftDateEditMode("checkOut")}
+                          className={`object-calendar-summary-date-button ${
+                            draftDateEditMode === "checkOut" ? "is-active" : ""
+                          }`}
+                        >
+                          Выезд: {formatDisplayDate(draftBookingState.checkOut)}
+                        </button>
+                      </div>
+                    ) : draftBookingState.checkIn ? (
+                      <>
+                        Заезд: {formatDisplayDate(draftBookingState.checkIn)}
+                        <br />
+                        Выезд не раньше {formatDisplayDate(addDays(draftBookingState.checkIn, minStayDays))}
+                      </>
+                    ) : (
+                      "Укажите даты"
+                    )}
+                  </div>
+                </div>
+
+                {draftNextTariffHint && (
+                  <div className="object-next-tariff-hint">
+                    ⓘ Добавьте ещё {draftNextTariffHint.daysToAdd}{" "}
+                    {pluralize(draftNextTariffHint.daysToAdd, "день", "дня", "дней")} — тариф станет{" "}
+                    {formatPrice(draftNextTariffHint.monthPrice)} / мес
+                  </div>
+                )}
+
+                <div className="object-calendar-months">
+                  {[calendarMonthDate, addMonths(calendarMonthDate, 1)].map((monthDate, monthIndex) => {
+                    const year = monthDate.getFullYear();
+                    const month = monthDate.getMonth();
+                    const daysInMonth = getDaysInMonth(year, month);
+                    const firstDay = new Date(year, month, 1);
+                    const startOffset = (firstDay.getDay() + 6) % 7;
+
+                    const cells = [
+                      ...Array.from({ length: startOffset }, () => null),
+                      ...Array.from({ length: daysInMonth }, (_, i) => i + 1),
+                    ];
+
+                    return (
+                      <div className="object-calendar-month" key={`${year}-${month}`}>
+                        <div className="object-calendar-month-header">
+                          {monthIndex === 0 ? (
+                            <button
+                              type="button"
+                              className="object-calendar-nav"
+                              disabled={isPrevCalendarDisabled}
+                              onClick={() =>
+                                setCalendarMonthDate((prev) => addMonths(prev, -1))
+                              }
+                            >
+                              ‹
+                            </button>
+                          ) : (
+                            <span />
+                          )}
+
+                          <div className="object-calendar-month-title">
+                            {formatCalendarMonthTitle(monthDate)}
+                          </div>
+
+                          {monthIndex === 1 ? (
+                            <button
+                              type="button"
+                              className="object-calendar-nav"
+                              onClick={() =>
+                                setCalendarMonthDate((prev) => addMonths(prev, 1))
+                              }
+                            >
+                              ›
+                            </button>
+                          ) : (
+                            <span />
+                          )}
+                        </div>
+
+                        <div className="object-calendar-weekdays">
+                          <span>Пн</span>
+                          <span>Вт</span>
+                          <span>Ср</span>
+                          <span>Чт</span>
+                          <span>Пт</span>
+                          <span>Сб</span>
+                          <span>Вс</span>
+                        </div>
+
+                        <div className="object-calendar-days">
+                          {cells.map((day, index) => {
+                            if (!day) {
+                              return <span key={`empty-${index}`} />;
+                            }
+
+                            const dateIso = toIsoDate(new Date(year, month, day));
+                            const minCheckout = draftBookingState.checkIn
+                              ? addDays(draftBookingState.checkIn, minStayDays)
+                              : null;
+                            const maxCheckout = draftBookingState.checkIn
+                              ? addDays(draftBookingState.checkIn, objectData?.max_stay ?? 365)
+                              : null;
+
+                            const isSelectedStart = draftBookingState.checkIn === dateIso;
+                            const isSelectedEnd = draftBookingState.checkOut === dateIso;
+                            const isInRange =
+                              draftBookingState.checkIn &&
+                              draftBookingState.checkOut &&
+                              dateIso > draftBookingState.checkIn &&
+                              dateIso < draftBookingState.checkOut;
+
+                            const isBeforeAvailable = dateIso < availableFromIso;
+
+                            const isEditingCheckout = draftDateEditMode === "checkOut";
+
+                            const isInvalidCheckout =
+                              draftBookingState.checkIn &&
+                              (!draftBookingState.checkOut || isEditingCheckout) &&
+                              dateIso > draftBookingState.checkIn &&
+                              (dateIso < minCheckout || dateIso > maxCheckout);
+
+                            const isAfterMaxCheckout =
+                            draftBookingState.checkIn && maxCheckout && dateIso > maxCheckout;
+
+                          const disabledTitle = isBeforeAvailable
+                            ? "Недоступно"
+                            : isAfterMaxCheckout
+                            ? `Максимальный срок — ${maxStayDays} дней`
+                            : isInvalidCheckout
+                            ? `Выезд не раньше ${formatDisplayDate(minCheckout)}`
+                            : "";
+
+                          const isDisabled = isBeforeAvailable || isInvalidCheckout || isAfterMaxCheckout;
+
+                          return (
+                            <button
+                              key={dateIso}
+                              type="button"
+                              title={disabledTitle}
+                              className={[
+                                "object-calendar-day",
+                                isSelectedStart ? "is-start" : "",
+                                isSelectedEnd ? "is-end" : "",
+                                isInRange ? "is-in-range" : "",
+                                isDisabled ? "is-disabled" : "",
+                              ]
+                                .filter(Boolean)
+                                .join(" ")}
+                              disabled={isDisabled}
+                              onClick={() => handleDraftDateClick(dateIso)}
+                            >
+                              {day}
+                            </button>
+                          );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="object-calendar-meta">
+                  Мин. срок - {minStayDays} дней · Макс. срок - {maxStayDays} дней
+                </div>
+
+                <div className="object-calendar-actions">
+                  <button
+                    type="button"
+                    className="btn btn-success w-100"
+                    disabled={!draftBookingState.checkOut}
+                    onClick={() => {
+                      setBookingState((prev) => ({
+                        ...prev,
+                        checkIn: draftBookingState.checkIn,
+                        checkOut: draftBookingState.checkOut,
+                        stayDays: diffDays(
+                          draftBookingState.checkIn,
+                          draftBookingState.checkOut
+                        ),
+                        arrivalMonths: [],
+                        invalidStateMessage: "",
+                      }));
+
+                      closeCalendarModal();
+                    }}
+                  >
+                    Применить
+                  </button>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showGuestsPopover && (
+        <div className="object-fullscreen-backdrop">
+          <div className="object-fullscreen-sheet object-guests-dialog">
+            <div className="object-fullscreen-header object-guests-dialog-header">
+              <div className="fw-semibold">Гости и питомцы</div>
+
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowGuestsPopover(false)}
+              />
+            </div>
+
+            <div className="object-fullscreen-body">
+              <div className="object-guests-modal-content">
+                
+                <div className="object-guests-popover-limit">
+                  Жильё рассчитано максимум на {guestRules.maxGuests} гостей
+                </div>
+
+                <div className="object-guests-control-row">
+                  <div>
+                    <div className="object-guests-control-title">Взрослые</div>
+                    <div className="object-guests-control-subtitle">от 18 лет</div>
+                  </div>
+
+                  <div className="object-counter">
+                    <button
+                      type="button"
+                      disabled={draftGuests.adults <= 1}
+                      onClick={() =>
+                        setDraftGuests((prev) => ({
+                          ...prev,
+                          adults: Math.max(1, prev.adults - 1),
+                        }))
+                      }
+                    >
+                      −
+                    </button>
+                    <span>{draftGuests.adults}</span>
+                    <button
+                      type="button"
+                      disabled={draftTotalGuests >= guestRules.maxGuests}
+                      onClick={() =>
+                        setDraftGuests((prev) => ({
+                          ...prev,
+                          adults: prev.adults + 1,
+                        }))
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                <div className="object-guests-control-row">
+                  <div>
+                    <div className="object-guests-control-title">Дети</div>
+                    <div className="object-guests-control-subtitle">
+                      {guestRules.childrenAllowed ? "от 0 до 17 лет" : "Нельзя с детьми"}
+                    </div>
+                  </div>
+
+                  <div className="object-counter">
+                    <button
+                      type="button"
+                      disabled={draftGuests.children <= 0}
+                      onClick={() =>
+                        setDraftGuests((prev) => ({
+                          ...prev,
+                          children: Math.max(0, prev.children - 1),
+                          childAges: prev.childAges.slice(0, -1),
+                        }))
+                      }
+                    >
+                      −
+                    </button>
+                    <span>{draftGuests.children}</span>
+                    <button
+                      type="button"
+                      disabled={
+                        !guestRules.childrenAllowed ||
+                        draftTotalGuests >= guestRules.maxGuests
+                      }
+                      onClick={() =>
+                        setDraftGuests((prev) => ({
+                          ...prev,
+                          children: prev.children + 1,
+                          childAges: [...prev.childAges, guestRules.minChildAge],
+                        }))
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+
+                {draftGuests.children > 0 && (
+                  <div className="object-child-ages">
+                    {draftGuests.childAges.map((age, index) => (
+                      <label key={index} className="object-child-age-row">
+                        <span>Возраст ребёнка {index + 1}</span>
+                        <select
+                          value={age}
+                          onChange={(e) => {
+                            const nextAges = [...draftGuests.childAges];
+                            nextAges[index] = Number(e.target.value);
+                            setDraftGuests((prev) => ({
+                              ...prev,
+                              childAges: nextAges,
+                            }));
+                          }}
+                        >
+                          {Array.from(
+                            { length: 18 - guestRules.minChildAge },
+                            (_, i) => guestRules.minChildAge + i
+                          ).map((value) => (
+                            <option key={value} value={value}>
+                              {value === 0 ? "до года" : `${value} лет`}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                {hasInvalidChildAge && (
+                  <div className="object-guests-warning">
+                    В этом жилье можно с детьми от {guestRules.minChildAge} лет
+                  </div>
+                )}
+
+                <div className="object-pets-block">
+                  <div className="object-pets-row">
+                    <div>
+                      <div className="object-guests-control-title">Питомцы</div>
+                      <div className="object-guests-control-subtitle">
+                        {guestRules.petsAllowed ? "Укажите какие" : "Нельзя с питомцами"}
+                      </div>
+                    </div>
+
+                    <label className="object-switch">
+                      <input
+                        type="checkbox"
+                        checked={draftGuests.pets}
+                        disabled={!guestRules.petsAllowed}
+                        onChange={(e) =>
+                          setDraftGuests((prev) => ({
+                            ...prev,
+                            pets: e.target.checked,
+                            petError: "",
+                          }))
+                        }
+                      />
+                      <span></span>
+                    </label>
+                  </div>
+
+                  {draftGuests.pets && guestRules.petsAllowed && (
+                    <>
+                      <textarea
+                        className="object-pet-textarea"
+                        placeholder="Опишите питомца (например: мопс, 7 кг)"
+                        value={draftGuests.petDescription}
+                        onChange={(e) =>
+                          setDraftGuests((prev) => ({
+                            ...prev,
+                            petDescription: e.target.value,
+                            petError: "",
+                          }))
+                        }
+                      />
+                      <div className="object-guests-control-subtitle mt-1">
+                        Хозяин рассмотрит запрос на проживание с питомцем
+                      </div>
+                    </>
+                  )}
+
+                  {draftGuests.petError && (
+                    <div className="object-guests-error">{draftGuests.petError}</div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="btn btn-success w-100 mt-3"
+                  disabled={hasInvalidChildAge}
+                  onClick={applyGuestsPopover}
+                >
+                  Готово
+                </button>
               </div>
             </div>
           </div>

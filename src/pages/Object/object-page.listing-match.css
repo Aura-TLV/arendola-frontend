@@ -983,7 +983,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  border-bottom: 1px solid #ececec;
+  border-bottom: none !important;
   background: #fff;
 }
 
@@ -2901,4 +2901,1349 @@
     border-top: 1px solid #eeeeee;
     margin-top: 20px;
   }
+}
+
+/* ===== Desktop Guests modal like calendar dialog ===== */
+
+.object-guests-modal-content {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.object-guests-modal-content .btn-success {
+  margin-top: 20px;
+}
+
+@media (min-width: 992px) {
+  .object-fullscreen-sheet {
+    max-height: 88vh;
+  }
+
+  .object-fullscreen-body {
+    overflow-y: auto;
+    padding: 24px;
+  }
+
+  .object-fullscreen-header {
+    padding: 18px 24px;
+  }
+}
+
+/* ===== Guests desktop dialog size like client reference ===== */
+
+@media (min-width: 992px) {
+  .object-guests-dialog {
+    width: 430px !important;
+    max-width: 430px !important;
+    min-height: auto !important;
+    max-height: 78vh !important;
+    border-radius: 22px !important;
+  }
+
+  .object-guests-dialog .object-fullscreen-header {
+    padding: 18px 22px !important;
+  }
+
+  .object-guests-dialog .object-fullscreen-body {
+    padding: 20px 22px 22px !important;
+    max-height: calc(78vh - 76px) !important;
+    background: #fff !important;
+  }
+
+  .object-guests-dialog .object-guests-modal-content {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .object-guests-dialog .object-guests-popover-title {
+    font-size: 18px !important;
+    margin-bottom: 8px;
+  }
+
+  .object-guests-dialog .object-guests-control-row,
+  .object-guests-dialog .object-pets-row {
+    padding: 16px 0;
+  }
+
+  .object-guests-dialog .object-pet-textarea {
+    min-height: 96px;
+  }
+
+  .object-guests-dialog .btn-success {
+    min-height: 48px;
+  }
+}
+
+
+.object-guests-dialog {
+  width: 560px;
+  max-width: calc(100vw - 32px);
+
+  height: auto;
+  max-height: 90vh;
+
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.object-guests-dialog .object-fullscreen-body {
+  overflow-y: visible;
+  max-height: none;
+
+  padding: 32px 32px 28px;
+}
+
+.object-guests-modal-content {
+  max-width: 100%;
+}
+
+.object-child-ages {
+  margin-top: 20px;
+}
+
+.object-pets-block {
+  margin-top: 24px;
+}
+
+.object-pet-textarea {
+  min-height: 96px;
+  resize: vertical;
+}
+
+/* ===== Compact desktop Guests dialog ===== */
+
+@media (min-width: 992px) {
+  .object-guests-dialog {
+    position: relative;
+    width: 430px !important;
+    max-width: 430px !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 22px !important;
+    overflow: visible !important;
+  }
+
+  .object-guests-dialog .object-fullscreen-body {
+    padding: 24px 24px 22px !important;
+    overflow: visible !important;
+    max-height: none !important;
+    background: #fff !important;
+    border-radius: 22px !important;
+  }
+
+  .object-guests-dialog-close {
+    position: absolute;
+    top: 22px;
+    right: 22px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background-color: #fff;
+    box-shadow: none;
+  }
+
+  .object-guests-modal-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .object-guests-dialog .object-guests-popover-title {
+    font-size: 18px !important;
+    margin-bottom: 6px !important;
+    padding-right: 48px;
+  }
+
+  .object-guests-dialog .object-guests-popover-limit {
+    margin-bottom: 18px !important;
+  }
+
+  .object-guests-dialog .object-guests-control-row,
+  .object-guests-dialog .object-pets-row {
+    padding: 14px 0 !important;
+  }
+
+  .object-guests-dialog .object-child-ages {
+    margin-top: 0 !important;
+    padding: 12px 0 !important;
+  }
+
+  .object-guests-dialog .object-child-age-row {
+    margin-bottom: 8px !important;
+  }
+
+  .object-guests-dialog .object-pets-block {
+    margin-top: 0 !important;
+  }
+
+  .object-guests-dialog .object-pet-textarea {
+    min-height: 78px !important;
+    margin-top: 10px !important;
+  }
+
+  .object-guests-dialog .btn-success {
+    min-height: 46px !important;
+    margin-top: 18px !important;
+  }
+}
+
+@media (min-width: 992px) {
+  .object-guests-dialog {
+    width: 430px !important;
+    max-width: 430px !important;
+    height: auto !important;
+    max-height: none !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+
+  .object-guests-dialog-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 22px 24px 16px !important;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .object-guests-dialog-header .fw-semibold {
+    font-size: 18px !important;
+    text-align: left !important;
+  }
+
+  .object-guests-dialog .object-fullscreen-body {
+    padding: 16px 24px 22px !important;
+    overflow: visible !important;
+    max-height: none !important;
+    background: #fff !important;
+  }
+
+  .object-guests-dialog .object-guests-popover-limit {
+    margin-bottom: 16px !important;
+  }
+
+  .object-guests-dialog .object-guests-control-row,
+  .object-guests-dialog .object-pets-row {
+    padding: 12px 0 !important;
+  }
+
+  .object-guests-dialog .object-child-ages {
+    margin-top: 0 !important;
+    padding: 10px 0 !important;
+  }
+
+  .object-guests-dialog .object-pet-textarea {
+    min-height: 72px !important;
+    margin-top: 10px !important;
+  }
+
+  .object-guests-dialog .btn-success {
+    min-height: 46px !important;
+    margin-top: 16px !important;
+  }
+}
+
+/* ===== Object calendar dialog ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog {
+    width: 760px !important;
+    max-width: calc(100vw - 48px) !important;
+    min-height: auto !important;
+    max-height: none !important;
+    border-radius: 22px !important;
+    overflow: hidden !important;
+  }
+
+  .object-calendar-dialog-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    padding: 22px 24px 16px !important;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    background: #fff !important;
+    padding: 20px 24px 24px !important;
+    overflow: visible !important;
+  }
+
+  .object-calendar-summary {
+    margin-bottom: 18px;
+  }
+
+  .object-calendar-summary-main {
+    font-size: 15px;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .object-calendar-summary-sub {
+    margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+  }
+
+  .object-calendar-months {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .object-calendar-month-header {
+    display: grid;
+    grid-template-columns: 32px 1fr 32px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .object-calendar-month-title {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .object-calendar-nav {
+    border: 0;
+    background: #f5f5f5;
+    border-radius: 999px;
+    width: 32px;
+    height: 32px;
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .object-calendar-weekdays,
+  .object-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+
+  .object-calendar-weekdays {
+    margin-bottom: 8px;
+  }
+
+  .object-calendar-weekdays span {
+    text-align: center;
+    font-size: 11px;
+    color: #999;
+  }
+
+  .object-calendar-day {
+    width: 36px;
+    height: 36px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 13px;
+    color: #222;
+    margin: 0 auto;
+  }
+
+  .object-calendar-day:hover {
+    background: #f8fafc;
+  }
+
+  .object-calendar-day.is-in-range {
+    background: #eaf7ee;
+    border-radius: 12px;
+  }
+
+  .object-calendar-day.is-start,
+  .object-calendar-day.is-end {
+    border-color: #009e36;
+    background: #e5f5e8;
+    color: #007a2c;
+    font-weight: 600;
+  }
+
+  .object-calendar-day.is-disabled {
+    color: #c7c7c7;
+    cursor: not-allowed;
+    background: transparent;
+  }
+
+  .object-calendar-meta {
+    margin: 18px 0 18px;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.45;
+  }
+
+  .object-calendar-modal-content > .btn-success {
+    width: 280px !important;
+    margin-left: auto;
+    display: flex;
+    justify-content: center;
+    min-height: 44px;
+  }
+
+  .object-calendar-modal-content > .btn-success:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+@media (min-width: 992px) {
+  .object-calendar-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-top: 18px;
+  }
+
+  .object-calendar-actions .btn {
+    min-height: 44px;
+    border-radius: 14px;
+    padding: 0 24px;
+    font-weight: 600;
+  }
+
+  .object-calendar-actions .btn-success {
+    min-width: 180px;
+  }
+}
+
+
+/* ===== Calendar compact height fix ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog {
+    width: 760px !important;
+    max-height: calc(100vh - 40px) !important;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    padding: 14px 24px 18px !important;
+    overflow: visible !important;
+  }
+
+  .object-calendar-summary {
+    margin-bottom: 12px !important;
+  }
+
+  .object-calendar-months {
+    gap: 24px !important;
+  }
+
+  .object-calendar-month-header {
+    margin-bottom: 8px !important;
+  }
+
+  .object-calendar-weekdays {
+    margin-bottom: 4px !important;
+  }
+
+  .object-calendar-weekdays,
+  .object-calendar-days {
+    gap: 4px !important;
+  }
+
+  .object-calendar-day {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .object-calendar-meta {
+    margin: 10px 0 10px !important;
+  }
+
+  .object-calendar-actions {
+    margin-top: 10px !important;
+  }
+}
+
+/* ===== Calendar: match client reference more closely ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog {
+    width: 760px !important;
+    max-width: 760px !important;
+    border-radius: 24px !important;
+  }
+
+  .object-calendar-dialog-header {
+    padding: 18px 24px 14px !important;
+  }
+
+  .object-calendar-dialog-header .fw-semibold {
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-align: left !important;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    padding: 18px 24px 22px !important;
+  }
+
+  .object-calendar-summary-main {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+  }
+
+  .object-calendar-summary-sub {
+    font-size: 12px !important;
+  }
+
+  .object-calendar-month-title {
+    font-size: 14px !important;
+  }
+
+  .object-calendar-nav {
+    width: 28px !important;
+    height: 28px !important;
+    font-size: 18px !important;
+    background: #f7f7f7 !important;
+  }
+
+  .object-calendar-day {
+    width: 30px !important;
+    height: 30px !important;
+    font-size: 13px !important;
+  }
+
+  .object-calendar-weekdays span {
+    font-size: 11px !important;
+  }
+
+  .object-calendar-actions .btn-outline-secondary {
+    min-width: 96px !important;
+    height: 40px !important;
+    border-radius: 14px !important;
+  }
+
+  .object-calendar-actions .btn-success {
+    width: 180px !important;
+    min-width: 180px !important;
+    height: 40px !important;
+    border-radius: 14px !important;
+  }
+}
+
+
+/* ===== Calendar top like client reference ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog {
+    position: relative;
+    width: 760px !important;
+    max-width: 760px !important;
+    border-radius: 22px !important;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    padding: 22px 24px 22px !important;
+  }
+
+  .object-calendar-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    z-index: 5;
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background-color: #fff;
+  }
+
+  .object-calendar-summary {
+    width: calc(100% - 58px);
+    min-height: 72px;
+    border: 1px solid #b8efc8;
+    background: #f8fffa;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 22px !important;
+  }
+
+  .object-calendar-summary-main {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+  }
+
+  .object-calendar-summary-sub {
+    font-size: 13px !important;
+    color: #6b7280 !important;
+    margin-top: 6px !important;
+  }
+
+  .object-calendar-month-header {
+    margin-bottom: 10px !important;
+  }
+
+  .object-calendar-meta {
+    margin: 12px 0 12px !important;
+  }
+}
+
+/* ===== Calendar compact final ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog .object-fullscreen-body {
+    padding: 18px 24px 18px !important;
+  }
+
+  .object-calendar-summary {
+    min-height: 58px !important;
+    padding: 12px 16px !important;
+    margin-bottom: 16px !important;
+    border-radius: 12px !important;
+  }
+
+  .object-calendar-summary-main {
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+  }
+
+  .object-calendar-summary-sub {
+    font-size: 12px !important;
+    margin-top: 4px !important;
+  }
+
+  .object-calendar-month-header {
+    margin-bottom: 6px !important;
+  }
+
+  .object-calendar-weekdays {
+    margin-bottom: 2px !important;
+  }
+
+  .object-calendar-day {
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .object-calendar-meta {
+    margin: 8px 0 8px !important;
+    font-size: 11px !important;
+  }
+
+  .object-calendar-actions {
+    margin-top: 6px !important;
+  }
+}
+
+/* ===== Calendar final spacing/buttons polish ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-summary {
+    margin-bottom: 24px !important;
+  }
+
+  .object-calendar-actions .btn {
+    min-height: 38px !important;
+    height: 38px !important;
+    padding: 0 20px !important;
+    font-size: 13px !important;
+  }
+
+  .object-calendar-actions .btn-outline-secondary {
+    min-width: 96px !important;
+  }
+
+  .object-calendar-actions .btn-success {
+    width: 160px !important;
+    min-width: 160px !important;
+  }
+}
+
+
+/* ===== Unified mobile fullscreen header subtitle ===== */
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-header-title {
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .object-fullscreen-header-title .fw-semibold {
+    font-size: 20px;
+    line-height: 1.2;
+  }
+
+  .object-fullscreen-header-subtitle {
+    margin-top: 8px;
+    font-size: 15px;
+    line-height: 1.35;
+    font-weight: 400;
+    color: #6b7280;
+  }
+
+  .object-fullscreen-body .object-guests-control-row:first-child {
+    margin-top: 0;
+  }
+}
+
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-header {
+    min-height: 96px;
+    align-items: center;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .object-fullscreen-header-title {
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+  }
+
+  .object-fullscreen-header-title .fw-semibold {
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .object-fullscreen-header-subtitle {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.35;
+    font-weight: 400;
+    color: #6b7280;
+  }
+
+  .object-fullscreen-body .object-guests-control-row:first-child {
+    margin-top: 0;
+  }
+}
+
+
+/* ===== FINAL: desktop guests modal scroll only when needed ===== */
+
+@media (min-width: 992px) {
+  .object-guests-dialog {
+    width: 430px !important;
+    max-width: 430px !important;
+    max-height: 90vh !important;
+    overflow: hidden !important;
+    border-radius: 22px !important;
+  }
+
+  .object-guests-dialog .object-fullscreen-header {
+    flex: 0 0 auto;
+  }
+
+  .object-guests-dialog .object-fullscreen-body {
+    max-height: calc(90vh - 72px) !important;
+    overflow-y: auto !important;
+    padding: 20px 24px 22px !important;
+    background: #fff !important;
+  }
+
+  .object-guests-dialog .object-guests-modal-content {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding-right: 4px !important;
+  }
+
+  .object-guests-dialog .object-pet-textarea {
+    min-height: 96px !important;
+    max-height: 160px !important;
+    resize: vertical;
+  }
+}
+
+
+/* ===== MOBILE calendar ===== */
+
+@media (max-width: 991.98px) {
+
+  .object-calendar-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    padding: 16px 16px 120px !important;
+    overflow-y: auto !important;
+  }
+
+  .object-calendar-months {
+    display: block !important;
+  }
+
+  .object-calendar-months > *:nth-child(2) {
+    display: none !important;
+  }
+
+  .object-calendar-day {
+    width: 42px !important;
+    height: 42px !important;
+    font-size: 14px !important;
+  }
+
+  .object-calendar-weekdays,
+  .object-calendar-days {
+    gap: 8px !important;
+  }
+
+  .object-calendar-actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    background: #fff;
+    border-top: 1px solid #eeeeee;
+    z-index: 20;
+  }
+
+  .object-calendar-actions .btn-success {
+    width: 100% !important;
+    height: 48px !important;
+  }
+
+  .object-calendar-actions .btn-outline-secondary {
+    display: none !important;
+  }
+}
+
+
+/* ===== FINAL mobile calendar inside stay params ===== */
+
+@media (max-width: 991.98px) {
+  .object-mobile-calendar {
+    margin-top: 10px;
+  }
+
+  .object-mobile-calendar-summary {
+    background: #f8fffa;
+    border: 1px solid #b8efc8;
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .object-mobile-calendar-summary-main {
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .object-mobile-calendar-summary-sub {
+    margin-top: 6px;
+    font-size: 14px;
+    line-height: 1.35;
+    color: #6b7280;
+  }
+
+  .object-mobile-calendar-meta {
+    font-size: 13px;
+    line-height: 1.35;
+    color: #6b7280;
+    margin-bottom: 18px;
+  }
+
+  .object-mobile-calendar-month {
+    background: #fff;
+  }
+
+  .object-mobile-calendar .object-calendar-month-header {
+    display: grid;
+    grid-template-columns: 40px 1fr 40px;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  .object-mobile-calendar .object-calendar-month-title {
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.25;
+    font-weight: 700;
+    color: #111827;
+  }
+
+  .object-mobile-calendar .object-calendar-nav {
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: 999px;
+    background: #f5f5f5;
+    font-size: 22px;
+    line-height: 1;
+    color: #111827;
+  }
+
+  .object-mobile-calendar .object-calendar-weekdays,
+  .object-mobile-calendar .object-calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .object-mobile-calendar .object-calendar-weekdays {
+    margin-bottom: 8px;
+  }
+
+  .object-mobile-calendar .object-calendar-weekdays span {
+    text-align: center;
+    font-size: 12px;
+    color: #9ca3af;
+  }
+
+  .object-mobile-calendar .object-calendar-day {
+    width: 38px;
+    height: 38px;
+    margin: 0 auto;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    font-size: 14px;
+    color: #111827;
+  }
+
+  .object-mobile-calendar .object-calendar-day.is-in-range {
+    background: #eaf7ee;
+  }
+
+  .object-mobile-calendar .object-calendar-day.is-start,
+  .object-mobile-calendar .object-calendar-day.is-end {
+    border-color: #009e36;
+    background: #e5f5e8;
+    color: #007a2c;
+    font-weight: 700;
+  }
+
+  .object-mobile-calendar .object-calendar-day.is-disabled {
+    color: #c7c7c7;
+    background: #f8f8f8;
+    cursor: not-allowed;
+  }
+
+  .object-mobile-fixed-cta {
+    z-index: 10;
+  }
+}
+
+
+/* ===== FINAL mobile stay flow fixed CTA ===== */
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-body {
+    padding-bottom: 112px !important;
+  }
+
+  .object-mobile-fixed-cta {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 14px 16px calc(14px + env(safe-area-inset-bottom));
+    background: #fff;
+    border-top: 1px solid #eeeeee;
+    z-index: 30;
+  }
+
+  .object-mobile-fixed-cta .btn {
+    height: 48px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .object-mobile-fixed-cta .btn:disabled {
+    opacity: 0.45;
+  }
+}
+
+
+
+/* ===== FINAL mobile guests screen according to ТЗ ===== */
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-back-button {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    color: #009e36;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .object-mobile-guests-heading {
+    padding: 0 0 16px;
+    margin: 0 0 10px;
+    border-bottom: 1px solid #eeeeee;
+  }
+
+  .object-mobile-guests-heading-title {
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 6px;
+  }
+
+  .object-mobile-guests-heading-subtitle {
+    font-size: 14px;
+    line-height: 1.35;
+    color: #6b7280;
+  }
+
+  .object-fullscreen-body {
+    padding-bottom: 112px !important;
+  }
+
+  .object-mobile-fixed-cta {
+    position: sticky;
+    bottom: 0;
+    background: #fff;
+    padding: 14px 0 calc(14px + env(safe-area-inset-bottom));
+    border-top: 1px solid #eeeeee;
+    margin-top: 20px;
+    z-index: 10;
+  }
+
+  .object-mobile-fixed-cta .btn {
+    height: 56px;
+    border-radius: 999px;
+    font-size: 16px !important;
+    font-weight: 700;
+  }
+}
+
+
+
+/* ===== FINAL fix mobile guests CTA ===== */
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-body {
+    padding-bottom: 120px !important;
+  }
+
+  .object-mobile-fixed-cta {
+    position: fixed !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    max-width: 640px;
+    margin: 0 auto !important;
+    padding: 14px 18px calc(14px + env(safe-area-inset-bottom)) !important;
+    background: #fff;
+    border-top: 1px solid #eeeeee;
+    z-index: 50;
+  }
+
+  .object-mobile-fixed-cta .btn {
+    height: 56px;
+    border-radius: 999px;
+    font-size: 16px !important;
+    font-weight: 700;
+  }
+}
+
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-back-button {
+    font-size: 26px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+  }
+}
+
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-header {
+    border-bottom: 1px solid #eeeeee !important;
+  }
+
+  .object-fullscreen-sheet-guests .object-fullscreen-header {
+    border-bottom: 0 !important;
+    padding-bottom: 8px !important;
+  }
+
+  .object-fullscreen-sheet-guests .object-fullscreen-body {
+    padding-top: 8px !important;
+  }
+
+  .object-fullscreen-sheet-guests .object-mobile-guests-heading {
+    padding: 0 0 16px !important;
+    margin: 0 0 18px !important;
+    border-bottom: 1px solid #eeeeee !important;
+  }
+}
+
+
+@media (max-width: 991.98px) {
+  .object-fullscreen-sheet-guests .object-fullscreen-header {
+    min-height: 56px !important;
+    height: 56px !important;
+    padding: 10px 24px 6px !important;
+    border-bottom: 0 !important;
+  }
+
+  .object-fullscreen-sheet-guests .object-fullscreen-body {
+    padding-top: 0 !important;
+  }
+
+  .object-guests-mobile-title-block {
+    padding: 0 0 14px !important;
+    margin: 0 0 14px !important;
+    border-bottom: 1px solid #eeeeee !important;
+  }
+
+  .object-guests-mobile-title {
+    font-size: 24px !important;
+    line-height: 1.2 !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px !important;
+  }
+
+  .object-guests-mobile-subtitle {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+    color: #6b7280 !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ===== FINAL desktop calendar according to combined ТЗ ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-dialog {
+    width: 760px !important;
+    max-width: calc(100vw - 48px) !important;
+    max-height: calc(100vh - 48px) !important;
+    overflow: hidden !important;
+  }
+
+  .object-calendar-dialog .object-fullscreen-body {
+    overflow: visible !important;
+    max-height: none !important;
+    padding: 18px 22px 20px !important;
+  }
+
+  .object-calendar-modal-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .object-calendar-summary {
+    margin-bottom: 12px !important;
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  .object-calendar-months {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px !important;
+  }
+
+  .object-calendar-month-header {
+    margin-bottom: 10px !important;
+  }
+
+  .object-calendar-weekdays,
+  .object-calendar-days {
+    gap: 4px !important;
+  }
+
+  .object-calendar-day {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 12px !important;
+  }
+
+  .object-calendar-meta {
+    margin: 12px 0 14px !important;
+    font-size: 12px !important;
+  }
+
+  .object-calendar-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .object-calendar-actions .btn-success {
+    width: 260px !important;
+    min-height: 44px !important;
+  }
+}
+
+/* ===== FINAL desktop calendar summary spacing ===== */
+
+@media (min-width: 992px) {
+  .object-calendar-summary {
+    width: calc(100% - 82px) !important;
+    max-width: 680px !important;
+    min-height: 72px !important;
+    padding: 14px 18px !important;
+    margin: 0 0 18px !important;
+    border: 1px solid #b9efc8 !important;
+    border-radius: 14px !important;
+    background: #fff !important;
+    box-sizing: border-box !important;
+  }
+
+  .object-calendar-summary-main {
+    font-size: 15px !important;
+    line-height: 1.25 !important;
+    font-weight: 700 !important;
+    margin: 0 0 8px !important;
+    color: #111827 !important;
+  }
+
+  .object-calendar-summary-sub {
+    font-size: 13px !important;
+    line-height: 1.35 !important;
+    margin: 0 !important;
+    color: #6b7280 !important;
+  }
+}
+
+
+
+
+/* ===== FINAL desktop right column payment tooltip ===== */
+
+@media (min-width: 992px) {
+  .object-payment-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .object-payment-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: #374151;
+    
+  }
+
+  .object-payment-value {
+    color: #111827;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .object-tooltip-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1;
+    cursor: help;
+  }
+}
+
+
+.object-guests-warning {
+  margin-top: 10px;
+  font-size: 12px;
+  line-height: 1.35;
+  color: #b45309;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+
+.object-booking-warning {
+  font-size: 12px;
+  line-height: 1.35;
+  color: #b45309;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+
+.object-next-tariff-hint {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.35;
+  color: #6b7280;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.object-calendar-summary-date-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.object-calendar-summary-date-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.object-calendar-summary-date-button:hover {
+  color: #111827;
+}
+
+
+
+.object-calendar-summary-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.object-calendar-reset-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.2;
+  color: #6b7280;
+  text-decoration: underline;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.object-calendar-reset-button:hover {
+  color: #111827;
+}
+
+
+.object-calendar-dialog .object-calendar-reset-button {
+  margin-right: 64px;
+}
+
+.object-calendar-close {
+  top: 18px;
+  right: 18px;
 }
