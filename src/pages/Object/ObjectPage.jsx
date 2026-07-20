@@ -216,6 +216,7 @@ const formatArrivalMonthsLine = (months) => {
 
 const createEmptyBookingState = () => ({
   stayDays: null,
+  stayDaysExplicit: false,
   guests: 1,
   adults: 1,
   children: 0,
@@ -334,6 +335,7 @@ const getTariffForDays = (tariffs, days) =>
 
 export default function ObjectPage() {
   const [showCharacteristics, setShowCharacteristics] = useState(false);
+  const [showAboutSheet, setShowAboutSheet] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
   const location = useLocation();
@@ -469,10 +471,10 @@ const buildingDetails = {
   
   
 const objectsMock = {
-  "1": { min_stay: 60, max_stay: 365, available_from: "1 января 2026" },
-  "2": { min_stay: 30, max_stay: 365, available_from: "1 января 2026" },
-  "3": { min_stay: 60, max_stay: 365, available_from: "1 января 2026" },
-  "4": { min_stay: 30, max_stay: 365, available_from: "1 января 2026" },
+  "1": { min_stay: 60, max_stay: 365, available_from: "1 июля 2026" },
+  "2": { min_stay: 30, max_stay: 365, available_from: "1 июля 2026" },
+  "3": { min_stay: 60, max_stay: 365, available_from: "1 июля 2026" },
+  "4": { min_stay: 30, max_stay: 365, available_from: "1 июля 2026" },
 };
 
 const objectData = location.state?.objectData ?? objectsMock[id] ?? {
@@ -498,7 +500,8 @@ const [draftBookingState, setDraftBookingState] = useState(createEmptyBookingSta
 
 const [mobileStayStep, setMobileStayStep] = useState("calendar"); // calendar | guests
 
-const availableFromMonthKey = "2026-01"; // пока заглушка под текущий mock available_from
+const availableFromMonthKey = "2026-07";
+
 
 const [bookingState, setBookingState] = useState(() => {
   const savedBookingState = localStorage.getItem(BOOKING_STORAGE_KEY);
@@ -521,6 +524,7 @@ const [bookingState, setBookingState] = useState(() => {
   return {
     ...createEmptyBookingState(),
     stayDays: initialBooking.stayDays,
+    stayDaysExplicit: true,
     guests: 1,
     adults: 1,
   };
@@ -680,12 +684,12 @@ const handleDraftDateClick = (dateIso) => {
 const resetDraftDates = () => {
   setDraftDateEditMode(null);
 
-  // По ТЗ 4.4.1: если срок был только из точных дат — сбрасываем до min
-  // если срок выбирался отдельно (plashka) — сохраняем
+  // По ТЗ 4.4.1: если срок был выбран явно (плашкой) — сохраняем его.
+  // Если срок был рассчитан только из точного диапазона дат — сбрасываем до минимального.
   const stayWasFromDatesOnly =
     bookingState.checkIn &&
     bookingState.checkOut &&
-    !bookingState.stayDays;
+    !bookingState.stayDaysExplicit;
 
   setDraftBookingState((prev) => ({
     ...prev,
@@ -694,6 +698,7 @@ const resetDraftDates = () => {
     arrivalMonths: [],
     invalidStateMessage: "",
     stayDays: stayWasFromDatesOnly ? minStayDays : (bookingState.stayDays ?? minStayDays),
+    stayDaysExplicit: stayWasFromDatesOnly ? false : bookingState.stayDaysExplicit,
   }));
 };
 
@@ -1003,6 +1008,7 @@ const openStayParamsFullscreen = () => {
       const nextState = {
         ...prev,
         stayDays: nextStayDays,
+        stayDaysExplicit: true,
         invalidStateMessage: "",
       };
 
@@ -1222,7 +1228,14 @@ const openStayParamsFullscreen = () => {
                 <p className="object-about-text">
                   Светлая квартира в тихом дворе, до набережной 12 минут пешком.
                   Быстрый Wi-Fi, кондиционер, удобный матрас. Заселение по паспорту,
-                  договор и чек. <button type="button" className="object-inline-more">Ещё ›</button>
+                  договор и чек.{" "}
+                  <button
+                    type="button"
+                    className="object-inline-more"
+                    onClick={() => setShowAboutSheet(true)}
+                  >
+                    Ещё ›
+                  </button>
                 </p>
 
                 <div className="object-about-divider"></div>
@@ -1246,16 +1259,23 @@ const openStayParamsFullscreen = () => {
 
             <section className="card border-0 shadow-sm mb-3 d-lg-none">
               <div className="card-body">
+                <h2 className="h5 mb-3">Параметры проживания</h2>
                 <button
                   type="button"
                   className="w-100 d-flex flex-column align-items-stretch px-3 py-3 border rounded bg-light"
                   onClick={openStayParamsFullscreen}
                 >
-                  <div className="text-start flex-grow-1">
-                    <div className="fw-semibold">{stayCardView.stayLine}</div>
-                    <div className="small text-muted mt-1">{stayCardView.dateLine}</div>
-                    <div className="small text-muted mt-1">{stayCardView.guestsLine}</div>
-                  </div>
+                  {bookingState.invalidStateMessage ? (
+                    <div className="text-start flex-grow-1">
+                      <div className="fw-semibold">{CORRECTION_MESSAGE_MOBILE}</div>
+                    </div>
+                  ) : (
+                    <div className="text-start flex-grow-1">
+                      <div className="fw-semibold">{stayCardView.stayLine}</div>
+                      <div className="small text-muted mt-1">{stayCardView.dateLine}</div>
+                      <div className="small text-muted mt-1">{stayCardView.guestsLine}</div>
+                    </div>
+                  )}
 
                   <div className="mt-2 d-flex align-items-center justify-content-between">
                     <span
@@ -1266,7 +1286,7 @@ const openStayParamsFullscreen = () => {
                         fontWeight: 500,
                       }}
                     >
-                      Изменить параметры
+                      {bookingState.invalidStateMessage ? "Изменить параметры" : stayCardView.actionLabel}
                     </span>
                     <i className="bi bi-chevron-right text-secondary"></i>
                   </div>
@@ -1277,12 +1297,6 @@ const openStayParamsFullscreen = () => {
                 {stayCardView.showAvailableFrom && (
                   <div className="small text-muted mt-2 px-1">
                     Доступно с {availableFromLabel}
-                  </div>
-                )}
-
-                {bookingState.invalidStateMessage && (
-                  <div className="object-booking-warning mt-2">
-                    {CORRECTION_MESSAGE_MOBILE}
                   </div>
                 )}
 
@@ -1620,6 +1634,7 @@ const openStayParamsFullscreen = () => {
           <aside className="object-page-aside d-none d-lg-block">
             <div className="card border-0 shadow-sm object-desktop-booking-card">
               <div className="card-body">
+                <h2 className="h5 mb-3">Параметры проживания</h2>
                 <div className="object-stay-card-button w-100 px-3 py-3 border rounded bg-light mb-3">
                   <div className="object-stay-card-content">
                     <div className="object-stay-main">{stayCardView.stayLine}</div>
@@ -1643,6 +1658,12 @@ const openStayParamsFullscreen = () => {
                   </div>
                 </div>
 
+                {stayCardView.showAvailableFrom && (
+                  <div className="small text-muted mb-2 px-1">
+                    Доступно с {availableFromLabel}
+                  </div>
+                )}
+
                 <button
                   type="button"
                   className="object-guests-row"
@@ -1652,11 +1673,7 @@ const openStayParamsFullscreen = () => {
                   <i className="bi bi-chevron-right"></i>
                 </button>
 
-                {stayCardView.showAvailableFrom && (
-                  <div className="small text-muted mb-3 px-1">
-                    Доступно с {availableFromLabel}
-                  </div>
-                )}
+                
 
                 {bookingState.invalidStateMessage && (
                   <div className="object-booking-warning mb-3">
@@ -1957,6 +1974,49 @@ const openStayParamsFullscreen = () => {
           )}
         </div>
       </div>
+
+      {showAboutSheet && (
+        <div className="object-bottom-sheet-backdrop">
+          <div className="object-bottom-sheet object-info-sheet">
+            <div className="object-bottom-sheet-header">
+              <div>
+                <div className="fw-semibold">О жилье</div>
+                <div className="small text-muted">
+                  Подробное описание объекта
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setShowAboutSheet(false)}
+              />
+            </div>
+
+            <div className="object-bottom-sheet-body">
+              <div className="object-sheet-text-block">
+                <p className="mb-3">
+                  Светлая квартира в тихом дворе, до набережной 12 минут пешком.
+                </p>
+
+                <p className="mb-3">
+                  В квартире есть быстрый Wi-Fi, кондиционер, удобный матрас,
+                  оборудованная кухня и всё необходимое для длительного проживания.
+                </p>
+
+                <p className="mb-3">
+                  Заселение производится по паспорту. С хозяином заключается договор,
+                  а после оплаты предоставляется чек.
+                </p>
+
+                <p className="mb-0">
+                  Квартира подойдёт для одного человека, пары или небольшой семьи.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
 
       {showCharacteristics && (
@@ -2301,9 +2361,17 @@ const openStayParamsFullscreen = () => {
               )}
 
               <div className="object-fullscreen-header-title">
-                <div className="fw-semibold">
-                  {mobileStayStep === "guests" ? "" : "Параметры проживания"}
-                </div>
+                {mobileStayStep === "guests" ? (
+                  <>
+                    <div className="fw-semibold">Гости</div>
+                    <div className="small text-muted">
+                      Максимум {guestRules.maxGuests}{" "}
+                      {pluralize(guestRules.maxGuests, "гость", "гостя", "гостей")}
+                    </div>
+                  </>
+                ) : (
+                  <div className="fw-semibold">Параметры проживания</div>
+                )}
               </div>
 
               <button
@@ -2316,40 +2384,6 @@ const openStayParamsFullscreen = () => {
             <div className="object-fullscreen-body">
               {mobileStayStep === "calendar" && (
                 <>
-                  <div className="mb-4">
-                    <div className="fw-semibold mb-2">Срок проживания</div>
-                    <div className="small text-muted mb-2">
-                      Мин. срок: {Math.round(minStayDays / 30)} мес
-                    </div>
-
-                    <div className="d-flex gap-2">
-                      {[30, 60].map((days) => {
-                        const isDisabled = days < minStayDays;
-
-                        return (
-                          <button
-                            key={days}
-                            type="button"
-                            className={`btn btn-outline-secondary ${
-                              draftBookingState.stayDays === days ? "active" : ""
-                            }`}
-                            disabled={isDisabled}
-                            onClick={() => {
-                              if (isDisabled) return;
-
-                              setDraftBookingState((prev) => ({
-                                ...prev,
-                                stayDays: days,
-                              }));
-                            }}
-                          >
-                            {formatStay(days)}
-                            {isDisabled && <i className="bi bi-lock-fill ms-1"></i>}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
 
                   <div className="mb-4">
                     <div className="d-flex align-items-center justify-content-between mb-2">
@@ -2413,7 +2447,7 @@ const openStayParamsFullscreen = () => {
                       </div>
 
                       <div className="object-mobile-calendar-meta">
-                        Мин. срок - {minStayDays} дней · Макс. срок - {objectData?.max_stay ?? 365} дней
+                        Мин. срок — {minStayDays} дней · Макс. срок — {objectData?.max_stay ?? 365} дней
                       </div>
 
                       {draftNextTariffHint && (
@@ -2583,6 +2617,7 @@ const openStayParamsFullscreen = () => {
                             draftBookingState.checkIn,
                             draftBookingState.checkOut
                           ),
+                          stayDaysExplicit: false,
                           arrivalMonths: [],
                           invalidStateMessage: "",
                         }));
@@ -2598,13 +2633,6 @@ const openStayParamsFullscreen = () => {
 
               {mobileStayStep === "guests" && (
                 <>
-                <div className="object-mobile-guests-heading">
-                  <div className="object-mobile-guests-heading-title">Гости</div>
-                  <div className="object-mobile-guests-heading-subtitle">
-                    Максимум {guestRules.maxGuests} гостя
-                  </div>
-                </div>
-                  
 
                   <div className="object-guests-control-row">
                     <div>
@@ -3164,7 +3192,7 @@ const openStayParamsFullscreen = () => {
                 </div>
 
                 <div className="object-calendar-meta">
-                  Мин. срок - {minStayDays} дней · Макс. срок - {maxStayDays} дней
+                  Мин. срок — {minStayDays} дней · Макс. срок — {maxStayDays} дней
                 </div>
 
                 <div className="object-calendar-actions">
@@ -3181,6 +3209,7 @@ const openStayParamsFullscreen = () => {
                           draftBookingState.checkIn,
                           draftBookingState.checkOut
                         ),
+                        stayDaysExplicit: false,
                         arrivalMonths: [],
                         invalidStateMessage: "",
                       }));
@@ -3202,7 +3231,11 @@ const openStayParamsFullscreen = () => {
         <div className="object-fullscreen-backdrop">
           <div className="object-fullscreen-sheet object-guests-dialog">
             <div className="object-fullscreen-header object-guests-dialog-header">
-              <div className="fw-semibold">Гости и питомцы</div>
+              <div className="fw-semibold">Гости</div>
+              <div className="small text-muted">
+                Максимум {guestRules.maxGuests}{" "}
+                {pluralize(guestRules.maxGuests, "гость", "гостя", "гостей")}
+              </div>
 
               <button
                 type="button"
