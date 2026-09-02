@@ -5,14 +5,18 @@ import ListingToolbar from '../../components/listing/ListingToolbar.jsx';
 import OffersList from '../../components/listing/OffersList.jsx';
 import ListingMap from '../../components/listing/ListingMap.jsx';
 import Footer from '../../components/layout/Footer.jsx';
+import MobileSearchFlow from '../../components/search/MobileSearchFlow.jsx';
 
 export default function ListingPage() {
   // id карточки, над которой сейчас ховер
   const [hoveredOfferId, setHoveredOfferId] = useState(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [bookingState, setBookingState] = useState(null); // результат MobileSearchFlow
 
   return (
     <div className="listing-page">
-      <SiteHeader />
+      {/* ⬇ добавили mobileBookingState — теперь шапка видит результат поиска */}
+      <SiteHeader onSearchClick={() => setIsSearchOpen(true)} mobileBookingState={bookingState} />
 
       <ListingFilters />
 
@@ -36,6 +40,17 @@ export default function ListingPage() {
         </div>
       </main>
       <Footer />
+
+      <MobileSearchFlow
+        isOpen={isSearchOpen}
+        initialState={bookingState}
+        onClose={() => setIsSearchOpen(false)}
+        onApply={(result) => {
+          setBookingState(result); // ⬅ теперь это реально доходит до шапки
+          setIsSearchOpen(false);
+          // тут же можно дернуть загрузку офферов под новые параметры
+        }}
+      />
     </div>
   );
 }

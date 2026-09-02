@@ -2764,85 +2764,12 @@
   margin-bottom: 0;
 }
 
-
-
-.object-age-wrap {
-  position: relative;
-}
-
-.object-age-trigger {
-  min-width: 130px;
-  text-align: left;
+.object-child-age-row select {
   border: 1px solid #d1d5db;
   border-radius: 10px;
-  padding: 6px 30px 6px 10px;
-  font-size: 13px;
-  font-weight: 500;
-  color: #111827;
-  background-color: #fff;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236B7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 11px;
-  cursor: pointer;
-}
-
-.object-age-trigger:hover {
-  border-color: #9ca3af;
-}
-
-.object-age-trigger.is-placeholder {
-  color: #6b7280;
-}
-
-.object-age-trigger.is-error {
-  border-color: #dc2626;
-  color: #dc2626;
-}
-
-.object-age-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 10;
-}
-
-.object-age-dropdown {
-  position: absolute;
-  top: calc(100% + 4px);
-  right: 0;
-  z-index: 20;
-  width: 150px;
-  max-height: 220px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  padding: 6px 8px;
   background: #fff;
-  border: 1px solid #d1d5db;
-  border-radius: 12px;
-  box-shadow: 0 10px 28px rgba(17, 24, 39, 0.15);
-  padding: 6px;
-}
-
-.object-age-option {
-  border: 0;
-  background: transparent;
-  text-align: left;
-  padding: 8px 10px;
   font-size: 13px;
-  color: #111827;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.object-age-option:hover {
-  background: #f5f5f5;
-}
-
-.object-age-option.is-selected {
-  background: #eaf7ee;
-  color: #007a2c;
-  font-weight: 600;
 }
 
 .object-pets-block {
@@ -3942,7 +3869,7 @@
     border: 0;
     background: transparent;
     padding: 0;
-    color: #111827;
+    color: #009e36;
     font-size: 16px;
     font-weight: 600;
     line-height: 1;

@@ -7,9 +7,9 @@
   width:min(980px, calc(100% - 32px));
   max-height:80vh;
   background-color:#ffffff;
-  border-radius:22px;
-  padding:38px 24px 20px;
+  border-radius:24px;
   box-shadow:0 18px 45px rgba(0,0,0,0.16);
+  padding:24px 32px 20px;
   z-index:2000;
 }
 
@@ -25,8 +25,8 @@
   border-radius:999px;
   border:1px solid #dddddd;
   background:#f5f5f5;
-  padding:6px 18px;
-  font-size:13px;
+  padding:6px 20px;
+  font-size:14px;
   font-weight:500;
   color:#444;
 }
@@ -42,7 +42,7 @@
   display:flex;
   gap:40px;
   justify-content:center;
-  margin-bottom:12px;
+  margin-bottom:20px;
 }
 
 .dr-month{
@@ -59,18 +59,16 @@
 
 .dr-month-title{
   font-weight:600;
-  font-size:15px;
-  color:#222222; 
+  font-size:16px;
 }
 
 .dr-nav-btn{
-  width:40px;
-  height:40px;
+  width:32px;
+  height:32px;
   border-radius:999px;
   border:1px solid #d9d9d9;
-  background:#ffffff;
-  color:#222222;
-  font-size:18px;
+  background:#fff;
+  font-size:16px;
   line-height:1;
   display:inline-flex;
   align-items:center;
@@ -82,7 +80,7 @@
 .dr-weekdays{
   display:grid;
   grid-template-columns:repeat(7, 1fr);
-  font-size:11px;
+  font-size:12px;
   color:#9AA0A6;
   text-align:center;
   margin-bottom:4px;
@@ -93,12 +91,12 @@
   display:grid;
   grid-template-columns:repeat(7, 1fr);
   gap:4px;
-  font-size:13px;
+  font-size:14px;
 }
 
 .dr-day{
-  width:30px;
-  height:30px;
+  width:36px;
+  height:36px;
   border-radius:999px;
   display:flex;
   align-items:center;
@@ -133,9 +131,8 @@
 
 .dr-day-start,
 .dr-day-end{
-  background:#009E36;  /* было #D9D9D9 */
-  color:#ffffff;       /* было #222222 */
-  font-weight:600;      
+  background:#D9D9D9;  /* светло-серый */
+  color:#222222;
 }
 
 /* нижние чипы */
@@ -143,8 +140,7 @@
   display:flex;
   flex-wrap:wrap;
   gap:8px;
-  margin-top:28px;
-  margin-bottom:22px;
+  margin-top:8px;
 }
 
 .dr-chip{
@@ -152,16 +148,12 @@
   border:1px solid #d9d9d9;
   background:#ffffff;
   padding:6px 14px;
-  font-size:13px;
-  font-weight:500;
-  color:#666;
-  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+  font-size:14px;
+  color:#444;
 }
 
 .dr-chip-active{
-  background:#E5F5E8;
-  border-color:#009e36;
-  color:#009e36;
+  border-color:#222222;
 }
 
 /* =========================================================
@@ -175,7 +167,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0;
+  gap: 18px;
 }
 
 /* каждый блок по центру и ограничиваем ширину */
@@ -185,14 +177,10 @@
   margin: 0;
 }
 
-.dr-block + .dr-block{
-  margin-top: 32px;
-}
-
 /* заголовки ("Срок аренды", "Месяцы заезда") */
 .dr-block-title{
-  font-size:14px;
-  font-weight:600;
+  font-weight: 600;
+  font-size: 16px;
   text-align: center;
   margin: 0 0 12px 0;
   color: #222222;
@@ -233,7 +221,7 @@
 }
 
 .dr-stepper-num{
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.1;
 }
@@ -338,8 +326,8 @@
   white-space: nowrap;
   line-height: 1;        
   flex: 0 0 auto;      
-  padding: 8px 14px;
-  font-size: 13px;
+  padding: 10px 16px;   
+  font-size: 14px;
   font-weight: 400;
 }
 

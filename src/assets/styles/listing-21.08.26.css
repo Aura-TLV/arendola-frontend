@@ -71,7 +71,6 @@
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-  min-width:0;
 }
 
 
@@ -102,17 +101,11 @@
   align-items:center;
   justify-content:center;
   cursor:pointer;
-  flex:0 0 auto; 
 }
 
 .search-submit-btn i{
   font-size:18px;
   color:#222222;          
-}
-
-.listing-search .search-line > .search-item:last-of-type{
-  max-width:180px;
-  flex-shrink:1;
 }
 
 

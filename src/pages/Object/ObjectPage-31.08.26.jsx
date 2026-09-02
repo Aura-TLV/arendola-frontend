@@ -224,14 +224,6 @@ const formatArrivalMonthsLine = (months) => {
   return labels.join(", ");
 };
 
-const ageWord = (n) => {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
-  if (mod10 === 1 && mod100 !== 11) return "год";
-  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "года";
-  return "лет";
-};
-
 const createEmptyBookingState = () => ({
   stayDays: null,
   stayDaysExplicit: false,
@@ -562,8 +554,6 @@ const guestRules = {
 
 const [showGuestsPopover, setShowGuestsPopover] = useState(false);
 
-const [openAgeIndex, setOpenAgeIndex] = useState(null);
-
 const [showCalendarModal, setShowCalendarModal] = useState(false);
 
 const [draftDateEditMode, setDraftDateEditMode] = useState(null); // null | "checkIn" | "checkOut"
@@ -733,9 +723,7 @@ const draftTotalGuests = draftGuests.adults + draftGuests.children;
 
 const hasInvalidChildAge =
   draftGuests.children > 0 &&
-  draftGuests.childAges.some(
-    (age) => age === null || Number(age) < guestRules.minChildAge
-  );
+  draftGuests.childAges.some((age) => Number(age) < guestRules.minChildAge);
 
 const openGuestsPopover = () => {
   setDraftGuests({
@@ -748,7 +736,6 @@ const openGuestsPopover = () => {
   });
 
   setShowGuestsPopover((prev) => !prev);
-  setOpenAgeIndex(null);
 };
 
 const applyGuestsPopover = () => {
@@ -776,7 +763,6 @@ const applyGuestsPopover = () => {
   }));
 
   setShowGuestsPopover(false);
-  setOpenAgeIndex(null);
 };
 
 const derivedStayDays =
@@ -835,40 +821,17 @@ const openStayParamsFullscreen = () => {
   setMobileStayStep("calendar");
   setDraftDateEditMode(null);
   setShowStayParamsFullscreen(true);
-  setOpenAgeIndex(null);
 };
 
   const closeStayParamsFullscreen = () => {
     setShowStayParamsFullscreen(false);
-    setOpenAgeIndex(null);
   };
 
   const applyStayParamsFullscreen = () => {
-    if (hasInvalidChildAge) {
-      return;
-    }
-
+      if (hasInvalidChildAge) {
+        return;
+      }
     const totalGuests = draftGuests.adults + draftGuests.children;
-    const hasValidDraftDates = Boolean(draftBookingState.checkIn && draftBookingState.checkOut);
-
-    if (!hasValidDraftDates) {
-      // 9.7 — «Гости» открыт вручную до выбора валидных дат:
-      // сохраняем только гостей/питомцев, flow не закрываем,
-      // возвращаем пользователя на экран «Календарь»
-      setBookingState((prev) => ({
-        ...prev,
-        adults: draftGuests.adults,
-        children: draftGuests.children,
-        childAges: draftGuests.childAges,
-        guests: totalGuests,
-        pets: draftGuests.pets ? 1 : 0,
-        petDescription: draftGuests.petDescription,
-      }));
-
-      setOpenAgeIndex(null);
-      setMobileStayStep("calendar");
-      return;
-    }
 
     setBookingState({
       ...draftBookingState,
@@ -883,8 +846,7 @@ const openStayParamsFullscreen = () => {
     });
 
     setShowStayParamsFullscreen(false);
-    setOpenAgeIndex(null);
-  };
+ };
 
  const applyMobileGuestsScreen = () => {
   if (draftGuests.pets && !draftGuests.petDescription.trim()) {
@@ -2737,7 +2699,7 @@ const openStayParamsFullscreen = () => {
                           setDraftGuests((prev) => ({
                             ...prev,
                             children: prev.children + 1,
-                            childAges: [...prev.childAges, null],
+                            childAges: [...prev.childAges, guestRules.minChildAge],
                           }))
                         }
                       >
@@ -2748,58 +2710,31 @@ const openStayParamsFullscreen = () => {
 
                   {draftGuests.children > 0 && (
                     <div className="object-child-ages">
-                      {draftGuests.childAges.map((age, index) => {
-                        const isOpen = openAgeIndex === index;
-                        const isInvalid = age === null || Number(age) < guestRules.minChildAge;
-                        const label =
-                          age === null ? "Выбрать возраст" : age === 0 ? "до года" : `${age} ${ageWord(age)}`;
-
-                        return (
-                          <div key={index} className="object-child-age-row">
-                            <span>Ребёнок {index + 1}</span>
-
-                            <div className="object-age-wrap">
-                              <button
-                                type="button"
-                                className={
-                                  "object-age-trigger" +
-                                  (isInvalid && age !== null ? " is-error" : "") +
-                                  (age === null ? " is-placeholder" : "")
-                                }
-                                onClick={() => setOpenAgeIndex(isOpen ? null : index)}
-                              >
-                                {label}
-                              </button>
-
-                              {isOpen && (
-                                <>
-                                  <div className="object-age-backdrop" onClick={() => setOpenAgeIndex(null)} />
-                                  <div className="object-age-dropdown">
-                                    {Array.from(
-                                      { length: 18 - guestRules.minChildAge },
-                                      (_, i) => guestRules.minChildAge + i
-                                    ).map((value) => (
-                                      <button
-                                        type="button"
-                                        key={value}
-                                        className={"object-age-option" + (age === value ? " is-selected" : "")}
-                                        onClick={() => {
-                                          const nextAges = [...draftGuests.childAges];
-                                          nextAges[index] = value;
-                                          setDraftGuests((prev) => ({ ...prev, childAges: nextAges }));
-                                          setOpenAgeIndex(null);
-                                        }}
-                                      >
-                                        {value === 0 ? "до года" : `${value} ${ageWord(value)}`}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
+                      {draftGuests.childAges.map((age, index) => (
+                        <label key={index} className="object-child-age-row">
+                          <span>Возраст ребёнка {index + 1}</span>
+                          <select
+                            value={age}
+                            onChange={(e) => {
+                              const nextAges = [...draftGuests.childAges];
+                              nextAges[index] = Number(e.target.value);
+                              setDraftGuests((prev) => ({
+                                ...prev,
+                                childAges: nextAges,
+                              }));
+                            }}
+                          >
+                            {Array.from(
+                              { length: 18 - guestRules.minChildAge },
+                              (_, i) => guestRules.minChildAge + i
+                            ).map((value) => (
+                              <option key={value} value={value}>
+                                {value === 0 ? "до года" : `${value} лет`}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                      ))}
                     </div>
                   )}
 
@@ -3295,10 +3230,7 @@ const openStayParamsFullscreen = () => {
               <button
                 type="button"
                 className="btn-close"
-                onClick={() => {
-                  setShowGuestsPopover(false);
-                  setOpenAgeIndex(null);
-                }}
+                onClick={() => setShowGuestsPopover(false)}
               />
             </div>
 
@@ -3377,7 +3309,7 @@ const openStayParamsFullscreen = () => {
                         setDraftGuests((prev) => ({
                           ...prev,
                           children: prev.children + 1,
-                          childAges: [...prev.childAges, null],
+                          childAges: [...prev.childAges, guestRules.minChildAge],
                         }))
                       }
                     >
@@ -3388,58 +3320,31 @@ const openStayParamsFullscreen = () => {
 
                 {draftGuests.children > 0 && (
                   <div className="object-child-ages">
-                    {draftGuests.childAges.map((age, index) => {
-                      const isOpen = openAgeIndex === index;
-                      const isInvalid = age === null || Number(age) < guestRules.minChildAge;
-                      const label =
-                        age === null ? "Выбрать возраст" : age === 0 ? "до года" : `${age} ${ageWord(age)}`;
-
-                      return (
-                        <div key={index} className="object-child-age-row">
-                          <span>Ребёнок {index + 1}</span>
-
-                          <div className="object-age-wrap">
-                            <button
-                              type="button"
-                              className={
-                                "object-age-trigger" +
-                                (isInvalid && age !== null ? " is-error" : "") +
-                                (age === null ? " is-placeholder" : "")
-                              }
-                              onClick={() => setOpenAgeIndex(isOpen ? null : index)}
-                            >
-                              {label}
-                            </button>
-
-                            {isOpen && (
-                              <>
-                                <div className="object-age-backdrop" onClick={() => setOpenAgeIndex(null)} />
-                                <div className="object-age-dropdown">
-                                  {Array.from(
-                                    { length: 18 - guestRules.minChildAge },
-                                    (_, i) => guestRules.minChildAge + i
-                                  ).map((value) => (
-                                    <button
-                                      type="button"
-                                      key={value}
-                                      className={"object-age-option" + (age === value ? " is-selected" : "")}
-                                      onClick={() => {
-                                        const nextAges = [...draftGuests.childAges];
-                                        nextAges[index] = value;
-                                        setDraftGuests((prev) => ({ ...prev, childAges: nextAges }));
-                                        setOpenAgeIndex(null);
-                                      }}
-                                    >
-                                      {value === 0 ? "до года" : `${value} ${ageWord(value)}`}
-                                    </button>
-                                  ))}
-                                </div>
-                              </>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                    {draftGuests.childAges.map((age, index) => (
+                      <label key={index} className="object-child-age-row">
+                        <span>Возраст ребёнка {index + 1}</span>
+                        <select
+                          value={age}
+                          onChange={(e) => {
+                            const nextAges = [...draftGuests.childAges];
+                            nextAges[index] = Number(e.target.value);
+                            setDraftGuests((prev) => ({
+                              ...prev,
+                              childAges: nextAges,
+                            }));
+                          }}
+                        >
+                          {Array.from(
+                            { length: 18 - guestRules.minChildAge },
+                            (_, i) => guestRules.minChildAge + i
+                          ).map((value) => (
+                            <option key={value} value={value}>
+                              {value === 0 ? "до года" : `${value} лет`}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    ))}
                   </div>
                 )}
 

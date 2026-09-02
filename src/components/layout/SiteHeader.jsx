@@ -74,7 +74,34 @@ function flexSuffix(flexKey) {
   return '';
 }
 
-export default function SiteHeader() {
+// ⬇ добавили: подпись строки поиска на основе результата MobileSearchFlow
+// (bookingState приходит из ListingPage после «Показать варианты»)
+function formatMobileBookingLabel(bookingState, t) {
+  if (!bookingState) return null;
+
+  const cityName = bookingState.city?.name || '';
+
+  let whenPart;
+  if (bookingState.checkIn && bookingState.checkOut) {
+    whenPart = `${formatDateShort(bookingState.checkIn)} - ${formatDateShort(bookingState.checkOut)}`;
+  } else if (bookingState.arrivalMonths?.length) {
+    const monthsLabel = bookingState.arrivalMonths
+      .map((key) => {
+        const [y, m] = key.split('-').map(Number);
+        return `${RU_MONTHS_SHORT[m - 1]} ${y}`;
+      })
+      .join(', ');
+    whenPart = `${bookingState.stayMonths} мес · ${monthsLabel}`;
+  } else {
+    whenPart = `${bookingState.stayMonths} мес`;
+  }
+
+  const totalGuests = (bookingState.adults || 1) + (bookingState.children || 0);
+
+  return { cityName, whenPart, totalGuests };
+}
+
+export default function SiteHeader({ onSearchClick, mobileBookingState }) {
   const [isDateOpen, setIsDateOpen] = useState(false);
 
   const [when, setWhen] = useState({
@@ -108,8 +135,16 @@ export default function SiteHeader() {
 
   const [guestsCount, setGuestsCount] = useState(5);
 
+  // ⬇ добавили: мобильный ли сейчас экран
+  const isMobileViewport = () =>
+    typeof window !== 'undefined' && window.matchMedia('(max-width: 767.98px)').matches;
+
   const handleDateToggleClick = (e) => {
     e.stopPropagation();
+    if (isMobileViewport()) {
+      onSearchClick?.(); // ⬅ на мобилке открываем MobileSearchFlow вместо DateRangePanel
+      return;
+    }
     setIsDateOpen((prev) => !prev);
   };
 
@@ -172,7 +207,16 @@ export default function SiteHeader() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [isDateOpen]);
 
+  // ⬇ добавили: если есть результат MobileSearchFlow — считаем его сводку
+  const mobileBookingLabel = useMemo(
+    () => formatMobileBookingLabel(mobileBookingState, t),
+    [mobileBookingState, t]
+  );
+
   const whenLabel = useMemo(() => {
+    // ⬇ добавили: приоритет — результат мобильного поиска, если он есть
+    if (mobileBookingLabel) return mobileBookingLabel.whenPart;
+
     if (!when.mode) return t('header.datesLabel');
 
     if (when.mode === 'dates') {
@@ -192,7 +236,11 @@ export default function SiteHeader() {
     }
 
     return t('header.datesLabel');
-  }, [when, t]);
+  }, [when, t, mobileBookingLabel]);
+
+  // ⬇ добавили: если есть результат мобильного поиска — подставляем город и гостей
+  const displaySearchValue = mobileBookingLabel ? mobileBookingLabel.cityName : searchValue;
+  const displayGuestsCount = mobileBookingLabel ? mobileBookingLabel.totalGuests : guestsCount;
 
   useEffect(() => {
     if (!isAuthOpen) return;
@@ -244,10 +292,16 @@ export default function SiteHeader() {
                 <input
                   type="text"
                   className="search-input"
-                  value={searchValue}
+                  value={displaySearchValue}
+                  readOnly={Boolean(mobileBookingLabel)} // ⬅ добавили: не даём редактировать город руками, пока активен выбор из мобильного флоу
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder={t('header.regionLabel')}
                   onFocus={(e) => {
+                    if (isMobileViewport()) {
+                      e.target.blur();
+                      onSearchClick?.(); // ⬅ добавили: на мобилке фокус в поле открывает флоу, а не клавиатуру
+                      return;
+                    }
                     e.target.placeholder = '';
                   }}
                   onBlur={(e) => {
@@ -270,8 +324,13 @@ export default function SiteHeader() {
 
               <span className="search-divider"></span>
 
-              <div className="search-item">
-                {guestsCount} {t('header.guestsWord')}
+              <div
+                className="search-item"
+                onClick={() => {
+                  if (isMobileViewport()) onSearchClick?.(); // ⬅ добавили
+                }}
+              >
+                {displayGuestsCount} {t('header.guestsWord')}
               </div>
             </div>
 

@@ -59,17 +59,15 @@
 
 .dr-month-title{
   font-weight:600;
-  font-size:15px;
-  color:#222222; 
+  font-size:14px;
 }
 
 .dr-nav-btn{
-  width:40px;
-  height:40px;
+  width:28px;
+  height:28px;
   border-radius:999px;
   border:1px solid #d9d9d9;
-  background:#ffffff;
-  color:#222222;
+  background:#f7f7f7;
   font-size:18px;
   line-height:1;
   display:inline-flex;
@@ -133,9 +131,8 @@
 
 .dr-day-start,
 .dr-day-end{
-  background:#009E36;  /* было #D9D9D9 */
-  color:#ffffff;       /* было #222222 */
-  font-weight:600;      
+  background:#D9D9D9;  /* светло-серый */
+  color:#222222;
 }
 
 /* нижние чипы */
